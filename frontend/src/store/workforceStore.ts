@@ -36,17 +36,47 @@ export interface Certification {
   status: 'Active' | 'Warning' | 'Expired'
 }
 
+export interface Subcontractor {
+  id: string
+  name: string
+  activeCount: number
+  complianceScore: number
+  projects: string[]
+}
+
+export interface SafetyViolation {
+  id: string
+  location: string
+  hazardDescription: string
+  violatorCrew: string
+  severity: 'Minor' | 'Major' | 'Critical'
+  loggedAt: string
+}
+
+export interface GpsLocation {
+  id: string
+  workerName: string
+  role: string
+  lat: number
+  lng: number
+  zone: string
+}
+
 export interface WorkforceState {
   workers: Worker[]
   attendance: AttendanceEntry[]
   shifts: ShiftAssignment[]
   certifications: Certification[]
+  subcontractors: Subcontractor[]
+  safetyViolations: SafetyViolation[]
+  gpsLocations: GpsLocation[]
   
   onboardEmployee: (worker: Omit<Worker, 'id' | 'status' | 'safetyRating'>) => void
   clockInWorker: (workerId: string, geofence: string) => void
   clockOutWorker: (workerId: string) => void
   renewCertification: (id: string, nextExpiry: string) => void
   assignShift: (workerId: string, day: string, type: 'Day Shift' | 'Night Shift' | 'Off') => void
+  logSafetyViolation: (violation: Omit<SafetyViolation, 'id' | 'loggedAt'>) => void
 }
 
 const INITIAL_WORKERS: Worker[] = [
@@ -86,11 +116,31 @@ const INITIAL_CERTS: Certification[] = [
   { id: "c_3", workerId: "w_2", name: "AWS 3G Structural Welding cert", expiryDate: "2026-06-15", status: "Expired" }
 ]
 
+const INITIAL_SUBCONTRACTORS: Subcontractor[] = [
+  { id: "sub_1", name: "Apex Plumbing", activeCount: 15, complianceScore: 100, projects: ["Sector B Plumb", "Tower A Residences"] },
+  { id: "sub_2", name: "Heavy Ops Co", activeCount: 8, complianceScore: 85, projects: ["Zone A Excavation"] },
+  { id: "sub_3", name: "Apex Masonry", activeCount: 12, complianceScore: 95, projects: ["Tower A Concrete"] }
+]
+
+const INITIAL_VIOLATIONS: SafetyViolation[] = [
+  { id: "v_1", location: "Site Gate B", hazardDescription: "No Hardhat/Goggles detected", violatorCrew: "Apex Masonry", severity: "Major", loggedAt: "Today 10:15 AM" },
+  { id: "v_2", location: "Zone A Crane 3", hazardDescription: "Harness Not Secured", violatorCrew: "Heavy Ops Co", severity: "Critical", loggedAt: "Yesterday 3:00 PM" }
+]
+
+const INITIAL_GPS_LOCATIONS: GpsLocation[] = [
+  { id: "g_1", workerName: "John Doe", role: "Lead Crane Operator", lat: 37.7749, lng: -122.4194, zone: "Crane Operator Zone #3" },
+  { id: "g_2", workerName: "Sarah Jones", role: "Structural Welder", lat: 37.7752, lng: -122.4182, zone: "Sector B Scaffolding" },
+  { id: "g_3", workerName: "Dave Miller", role: "Safety Superintendent", lat: 37.7741, lng: -122.4201, zone: "Main Portal Gate A" }
+]
+
 export const useWorkforceStore = create<WorkforceState>((set) => ({
   workers: INITIAL_WORKERS,
   attendance: INITIAL_ATTENDANCE,
   shifts: INITIAL_SHIFTS,
   certifications: INITIAL_CERTS,
+  subcontractors: INITIAL_SUBCONTRACTORS,
+  safetyViolations: INITIAL_VIOLATIONS,
+  gpsLocations: INITIAL_GPS_LOCATIONS,
 
   onboardEmployee: (worker) => set((state) => ({
     workers: [...state.workers, {
@@ -155,7 +205,16 @@ export const useWorkforceStore = create<WorkforceState>((set) => ({
       ? state.shifts.map(s => s.workerId === workerId && s.day === day ? { ...s, type } : s)
       : [...state.shifts, { id: `s_${Date.now()}`, workerId, day, type }]
     return { shifts: nextShifts }
-  })
+  }),
+
+  logSafetyViolation: (violation) => set((state) => ({
+    safetyViolations: [...state.safetyViolations, {
+      ...violation,
+      id: `v_${Date.now()}`,
+      loggedAt: "Just Now"
+    }]
+  }))
 }))
 
 export default useWorkforceStore
+
