@@ -43,6 +43,7 @@ export default function CommandPalette() {
     { name: "Go to Projects", action: () => { navigate('/projects'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Materials", action: () => { navigate('/materials'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Finance", action: () => { navigate('/finance'); setOpen(false); }, icon: FolderGit2, type: "nav" },
+    { name: "Go to Workforce", action: () => { navigate('/workforce'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Features", action: () => navigate('/features'), icon: FolderGit2, type: "nav" },
     { name: "Go to Pricing", action: () => navigate('/pricing'), icon: FolderGit2, type: "nav" },
     { name: "Go to Admin console", action: () => navigate('/admin'), icon: Lock, type: "nav" },
