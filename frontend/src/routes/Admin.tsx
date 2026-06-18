@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import {
   ShieldAlert,
   UserPlus,
-  Trash2,
   Lock,
   Mail,
   UserCheck,
@@ -12,7 +11,6 @@ import {
 } from 'lucide-react'
 
 export default function Admin() {
-  const navigate = useNavigate()
   const role = useAuthStore((state) => state.role)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
