@@ -14,6 +14,16 @@ export default function Admin() {
   const role = useAuthStore((state) => state.role)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteRole, setInviteRole] = useState("pm")
+  const [inviteSent, setInviteSent] = useState(false)
+
+  const [team, setTeam] = useState([
+    { id: 1, name: "D. Hariprasath", email: "d.hariprasath@apex.com", role: "Superintendent", status: "Active" },
+    { id: 2, name: "Sarah Connor", email: "s.connor@apex.com", role: "Safety Officer", status: "Active" },
+    { id: 3, name: "John Doe", email: "j.doe@apex.com", role: "Project Manager", status: "Suspended" }
+  ])
+
   // Redirect if unauthorized
   if (!isAuthenticated || (role !== 'admin' && role !== 'owner')) {
     return (
@@ -35,15 +45,6 @@ export default function Admin() {
     )
   }
 
-  const [inviteEmail, setInviteEmail] = useState("")
-  const [inviteRole, setInviteRole] = useState("pm")
-  const [inviteSent, setInviteSent] = useState(false)
-
-  const [team, setTeam] = useState([
-    { id: 1, name: "D. Hariprasath", email: "d.hariprasath@apex.com", role: "Superintendent", status: "Active" },
-    { id: 2, name: "Sarah Connor", email: "s.connor@apex.com", role: "Safety Officer", status: "Active" },
-    { id: 3, name: "John Doe", email: "j.doe@apex.com", role: "Project Manager", status: "Suspended" }
-  ])
 
   const handleInvite = (e: React.FormEvent) => {
     e.preventDefault()
