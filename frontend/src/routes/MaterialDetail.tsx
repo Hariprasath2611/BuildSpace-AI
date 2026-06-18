@@ -4,21 +4,15 @@ import { useMaterialStore } from '../store/materialStore'
 import {
   ArrowLeft,
   Star,
-  Package,
-  Layers,
   MapPin,
-  TrendingUp,
   AlertTriangle,
   History,
-  FileText,
-  ShieldCheck,
   Send,
   User,
   Plus,
   Sparkles,
   ClipboardCheck,
   Building2,
-  Phone,
   Mail,
   FileSignature
 } from 'lucide-react'
