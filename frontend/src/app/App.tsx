@@ -122,6 +122,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'Finance Hub', path: '/finance', icon: DollarSign },
     { name: 'Workforce Hub', path: '/workforce', icon: Users },
     { name: 'Safety Hub', path: '/safety', icon: ShieldCheck },
+    { name: 'AI Operating System', path: '/ai', icon: Hammer },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
