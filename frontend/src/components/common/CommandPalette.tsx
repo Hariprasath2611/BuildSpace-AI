@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUIStore } from '../../store/uiStore'
 import { useAuthStore } from '../../store/authStore'
@@ -6,9 +6,6 @@ import { useSyncStore } from '../../store/syncStore'
 import {
   Search,
   Compass,
-  ArrowRight,
-  Sun,
-  Moon,
   LogOut,
   FolderGit2,
   Lock,

@@ -1,12 +1,7 @@
 import {
   TrendingUp,
   CloudRain,
-  ShieldAlert,
-  Clock,
-  Check,
-  AlertTriangle,
-  Compass,
-  Database
+  Check
 } from 'lucide-react'
 
 // 1. STATS WIDGET

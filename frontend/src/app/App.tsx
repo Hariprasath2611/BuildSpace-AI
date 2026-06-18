@@ -16,8 +16,8 @@ import {
   Compass,
   LayoutDashboard,
   FolderGit2,
-  ShieldAlert,
-  FolderDot
+  FolderDot,
+  Lock
 } from 'lucide-react'
 
 // Import Marketing / Auth Pages via @ path aliases
