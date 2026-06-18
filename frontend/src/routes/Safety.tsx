@@ -10,7 +10,6 @@ import {
   Activity,
   Map,
   ShieldAlert,
-  DollarSign,
   FileText,
   Camera,
   Thermometer,
