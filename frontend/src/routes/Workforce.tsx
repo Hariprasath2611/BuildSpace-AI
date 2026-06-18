@@ -4,7 +4,6 @@ import { useWorkforceStore } from '../store/workforceStore'
 import {
   Plus,
   Search,
-  AlertTriangle,
   ArrowRight,
   X,
   Grid,
