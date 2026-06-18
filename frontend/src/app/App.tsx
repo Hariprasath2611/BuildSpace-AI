@@ -283,6 +283,10 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Auth mode="login" />} />
           <Route path="/signup" element={<Auth mode="signup" />} />
+          <Route path="/select-organization" element={<SelectOrg />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-mfa" element={<MFA />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
