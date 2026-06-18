@@ -6,7 +6,6 @@ import {
   X,
   Sun,
   Moon,
-  ArrowRight,
   ShieldCheck,
   Send,
   Github,
