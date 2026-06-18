@@ -21,6 +21,10 @@ import AICenter from '@/routes/AI'
 import Security from '@/routes/Security'
 import Contact from '@/routes/Contact'
 import Auth from '@/routes/Auth'
+import SelectOrg from '@/routes/SelectOrg'
+import ForgotPassword from '@/routes/ForgotPassword'
+import MFA from '@/routes/MFA'
+import Admin from '@/routes/Admin'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
