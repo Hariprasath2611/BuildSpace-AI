@@ -42,6 +42,8 @@ import Finance from '@/routes/Finance'
 import FinanceDetail from '@/routes/FinanceDetail'
 import Workforce from '@/routes/Workforce'
 import WorkforceDetail from '@/routes/WorkforceDetail'
+import Safety from '@/routes/Safety'
+import SafetyDetail from '@/routes/SafetyDetail'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -119,6 +121,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'Materials Directory', path: '/materials', icon: FolderDot },
     { name: 'Finance Hub', path: '/finance', icon: DollarSign },
     { name: 'Workforce Hub', path: '/workforce', icon: Users },
+    { name: 'Safety Hub', path: '/safety', icon: ShieldCheck },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
@@ -504,6 +507,8 @@ export default function App() {
           <Route path="/finance/:budgetId" element={<FinanceDetail />} />
           <Route path="/workforce" element={<Workforce />} />
           <Route path="/workforce/:employeeId" element={<WorkforceDetail />} />
+          <Route path="/safety" element={<Safety />} />
+          <Route path="/safety/:incidentId" element={<SafetyDetail />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
