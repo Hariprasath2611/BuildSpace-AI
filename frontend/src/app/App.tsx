@@ -34,6 +34,8 @@ import MFA from '@/routes/MFA'
 import Admin from '@/routes/Admin'
 import Projects from '@/routes/Projects'
 import ProjectDetail from '@/routes/ProjectDetail'
+import Materials from '@/routes/Materials'
+import MaterialDetail from '@/routes/MaterialDetail'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -108,6 +110,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   const protectedLinks = [
     { name: 'Dashboard Control', path: '/', icon: LayoutDashboard },
     { name: 'Projects Directory', path: '/projects', icon: FolderGit2 },
+    { name: 'Materials Directory', path: '/materials', icon: FolderDot },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
@@ -487,6 +490,8 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<ProjectDetail />} />
+          <Route path="/materials" element={<Materials />} />
+          <Route path="/materials/:materialId" element={<MaterialDetail />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
