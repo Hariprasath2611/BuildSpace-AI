@@ -16,7 +16,8 @@ import {
   LayoutDashboard,
   FolderGit2,
   FolderDot,
-  Lock
+  Lock,
+  DollarSign
 } from 'lucide-react'
 
 // Import Marketing / Auth Pages via @ path aliases
@@ -36,6 +37,8 @@ import Projects from '@/routes/Projects'
 import ProjectDetail from '@/routes/ProjectDetail'
 import Materials from '@/routes/Materials'
 import MaterialDetail from '@/routes/MaterialDetail'
+import Finance from '@/routes/Finance'
+import FinanceDetail from '@/routes/FinanceDetail'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -111,6 +114,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'Dashboard Control', path: '/', icon: LayoutDashboard },
     { name: 'Projects Directory', path: '/projects', icon: FolderGit2 },
     { name: 'Materials Directory', path: '/materials', icon: FolderDot },
+    { name: 'Finance Hub', path: '/finance', icon: DollarSign },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
@@ -492,6 +496,8 @@ export default function App() {
           <Route path="/projects/:projectId" element={<ProjectDetail />} />
           <Route path="/materials" element={<Materials />} />
           <Route path="/materials/:materialId" element={<MaterialDetail />} />
+          <Route path="/finance" element={<Finance />} />
+          <Route path="/finance/:budgetId" element={<FinanceDetail />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
