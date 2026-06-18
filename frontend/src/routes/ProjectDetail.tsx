@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useProjectStore, WbsNode } from '../store/projectStore'
+import { useProjectStore } from '../store/projectStore'
+import type { WbsNode } from '../store/projectStore'
 import {
   FolderGit2,
   CheckCircle2,
@@ -8,11 +9,9 @@ import {
   Clock,
   Compass,
   DollarSign,
-  Check,
   Plus,
   X,
-  Send,
-  Hammer
+  Send
 } from 'lucide-react'
 
 export default function ProjectDetail() {
