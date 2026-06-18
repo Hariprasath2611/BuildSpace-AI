@@ -188,11 +188,11 @@ export const useWorkforceStore = create<WorkforceState>((set) => ({
   renewCertification: (id, nextExpiry) => set((state) => ({
     certifications: state.certifications.map((c) => {
       if (c.id === id) {
-        const nextStatus = new Date(nextExpiry) > new Date() ? 'Active' : 'Expired'
+        const nextStatus: 'Active' | 'Warning' | 'Expired' = new Date(nextExpiry) > new Date() ? 'Active' : 'Expired'
         return {
           ...c,
           expiryDate: nextExpiry,
-          status: nextStatus as any
+          status: nextStatus
         }
       }
       return c

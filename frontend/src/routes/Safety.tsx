@@ -202,7 +202,7 @@ export default function Safety() {
 
       {/* Primary Navigation Tabs */}
       <div className="flex flex-wrap border-b border-border gap-1 bg-muted/40 p-1 rounded-xl">
-        {[
+        {([
           { id: 'dashboard', name: 'Dashboard', icon: Activity },
           { id: 'inspections', name: 'Checklists Audits', icon: ClipboardCheck },
           { id: 'hazards', name: 'Hazard Registry', icon: ShieldAlert },
@@ -210,13 +210,13 @@ export default function Safety() {
           { id: 'ppe', name: 'AI PPE Camera', icon: Camera },
           { id: 'permits', name: 'Permit to Work', icon: Lock },
           { id: 'emergency', name: 'SOS Assembly Map', icon: Map }
-        ].map((tab) => {
+        ] as const).map((tab) => {
           const Icon = tab.icon
           const isActive = activeSection === tab.id
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveSection(tab.id as any)}
+              onClick={() => setActiveSection(tab.id)}
               className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-[11px] font-extrabold capitalize transition-all ${
                 isActive
                   ? 'bg-white dark:bg-[#141B2D] text-slate-800 dark:text-white shadow shadow-border'
@@ -802,7 +802,7 @@ export default function Safety() {
                   <label className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-355 font-mono">Category</label>
                   <select
                     value={hazCat}
-                    onChange={(e) => setHazCat(e.target.value as any)}
+                    onChange={(e) => setHazCat(e.target.value as 'Fall' | 'Electrical' | 'StruckBy' | 'CaughtInBetween' | 'Chemical' | 'Other')}
                     className="w-full p-2.5 border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs rounded-lg dark:bg-[#141B2D]"
                   >
                     <option value="Fall">Fall Hazard</option>
@@ -817,7 +817,7 @@ export default function Safety() {
                   <label className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-355 font-mono">Risk Level</label>
                   <select
                     value={hazRisk}
-                    onChange={(e) => setHazRisk(e.target.value as any)}
+                    onChange={(e) => setHazRisk(e.target.value as 'Low' | 'Medium' | 'High' | 'Critical')}
                     className="w-full p-2.5 border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs rounded-lg dark:bg-[#141B2D]"
                   >
                     <option value="Low">Low</option>
@@ -904,7 +904,7 @@ export default function Safety() {
                 <label className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-355 font-mono">Severity Tier</label>
                 <select
                   value={incSeverity}
-                  onChange={(e) => setIncSeverity(e.target.value as any)}
+                  onChange={(e) => setIncSeverity(e.target.value as 'NearMiss' | 'Minor' | 'Major' | 'Fatal')}
                   className="w-full p-2.5 border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs rounded-lg dark:bg-[#141B2D]"
                 >
                   <option value="NearMiss">Near Miss (No Injuries)</option>

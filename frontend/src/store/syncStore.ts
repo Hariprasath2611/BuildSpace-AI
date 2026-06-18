@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export interface SyncItem {
   id: string
   action: string
-  payload: any
+  payload: unknown
   timestamp: number
 }
 
@@ -11,7 +11,7 @@ export interface SyncState {
   isOnline: boolean
   queue: SyncItem[]
   setOnline: (online: boolean) => void
-  addToQueue: (action: string, payload: any) => void
+  addToQueue: (action: string, payload: unknown) => void
   clearQueue: () => void
 }
 

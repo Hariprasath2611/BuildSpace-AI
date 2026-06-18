@@ -252,11 +252,11 @@ export const useMaterialStore = create<MaterialState>((set) => ({
     const updatedMaterials = state.materials.map((m) => {
       if (m.id === log.materialId) {
         const nextStock = Math.max(0, m.currentStock - log.qty)
-        const nextStatus = nextStock <= m.minStock ? 'Reorder' : (nextStock <= m.minStock * 1.5 ? 'Warning' : 'Optimal')
+        const nextStatus: 'Optimal' | 'Warning' | 'Reorder' = nextStock <= m.minStock ? 'Reorder' : (nextStock <= m.minStock * 1.5 ? 'Warning' : 'Optimal')
         return {
           ...m,
           currentStock: nextStock,
-          status: nextStatus as any
+          status: nextStatus
         }
       }
       return m

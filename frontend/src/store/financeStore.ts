@@ -103,11 +103,11 @@ export const useFinanceStore = create<FinanceState>((set) => ({
   addBudgetRevision: (code, newAmount) => set((state) => ({
     budgets: state.budgets.map((b) => {
       if (b.costCode === code) {
-        const nextStatus = b.spent > newAmount ? 'Overrun' : (b.spent > newAmount * 0.9 ? 'Warning' : 'Optimal')
+        const nextStatus: 'Optimal' | 'Warning' | 'Overrun' = b.spent > newAmount ? 'Overrun' : (b.spent > newAmount * 0.9 ? 'Warning' : 'Optimal')
         return {
           ...b,
           revised: newAmount,
-          status: nextStatus as any
+          status: nextStatus
         }
       }
       return b

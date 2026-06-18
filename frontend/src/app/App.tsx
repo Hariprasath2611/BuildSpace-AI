@@ -367,7 +367,7 @@ function DashboardOverview() {
 
   const [isBuilderOpen, setIsBuilderOpen] = useState(false)
 
-  const handleAddWidget = (type: any, title: string) => {
+  const handleAddWidget = (type: 'stats' | 'progress' | 'weather' | 'safety' | 'budget', title: string) => {
     addWidget(type, title)
     setIsBuilderOpen(false)
   }
