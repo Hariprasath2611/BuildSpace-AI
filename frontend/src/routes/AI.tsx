@@ -4,8 +4,6 @@ import {
   Sparkles,
   Search,
   AlertTriangle,
-  ArrowRight,
-  Clock,
   Plus,
   Trash2,
   Pin,
@@ -15,19 +13,13 @@ import {
   Paperclip,
   TrendingUp,
   Play,
-  Settings,
   Activity,
   FileText,
   Layers,
-  ShieldAlert,
-  DollarSign,
   Send,
   Workflow as WorkflowIcon,
-  HelpCircle,
-  ThumbsUp,
   CheckCircle2,
-  PlusCircle,
-  AlertCircle
+  PlusCircle
 } from 'lucide-react'
 
 export default function AICenter() {
@@ -485,7 +477,7 @@ export default function AICenter() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {pendingApprovals.map(({ threadId, messageId, action }) => (
+                    {pendingApprovals.map(({ messageId, action }) => (
                       <div
                         key={action.id}
                         className="border border-border rounded-xl p-4 bg-muted/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
