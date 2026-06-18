@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Sparkles,
-  CheckCircle2,
   ArrowRight,
   ChevronDown,
   ShieldAlert,
   Clock,
   Database,
-  TrendingUp,
-  FolderGit2
+  TrendingUp
 } from 'lucide-react'
 
 // Suggested chips for Sandbox
