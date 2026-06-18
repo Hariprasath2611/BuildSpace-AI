@@ -4,26 +4,19 @@ import { useSafetyStore } from '../store/safetyStore'
 import {
   Plus,
   Search,
-  ArrowRight,
   X,
-  Grid,
-  List,
   Sparkles,
-  UserCheck,
   ClipboardCheck,
   Activity,
   Map,
-  Calendar,
-  TrendingUp,
   ShieldAlert,
-  Building,
-  QrCode,
+  DollarSign,
   FileText,
   Camera,
   Thermometer,
-  Send,
   Wind,
-  CheckCircle2
+  CheckCircle2,
+  Lock
 } from 'lucide-react'
 
 export default function Safety() {
@@ -70,17 +63,19 @@ export default function Safety() {
   // Interactive AI PPE Video Simulator states
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [cameraSource, setCameraSource] = useState("Gate A Checkpoint")
-  const [detectedItems, setDetectedItems] = useState([
-    { label: "OSHA Hardhat", status: "Compliant", score: 99 },
-    { label: "High-Vis Vest", status: "Compliant", score: 95 },
-    { label: "Steel-Toe Boots", status: "Compliant", score: 96 }
-  ])
   const [isPpeAuditLogged, setIsPpeAuditLogged] = useState(false)
 
   // Weather Recommendations
   const heatIndex = 98 // 98F High heat
   const windSpeed = 28 // 28mph High wind crane limits
   
+  // Bounding box options
+  const detectedItems = [
+    { label: "OSHA Hardhat", status: "Compliant", score: 99 },
+    { label: "High-Vis Vest", status: "Compliant", score: 95 },
+    { label: "Steel-Toe Boots", status: "Compliant", score: 96 }
+  ]
+
   // Filtering
   const filteredHazards = hazards.filter(h => {
     const matchesSearch = h.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -140,8 +135,28 @@ export default function Safety() {
     setIsPpeAuditLogged(true)
   }
 
+  // Custom SVG Chart Data Definitions
+  const attendanceTrend = [
+    { day: "Mon", value: 340 },
+    { day: "Tue", value: 350 },
+    { day: "Wed", value: 335 },
+    { day: "Thu", value: 345 },
+    { day: "Fri", value: 350 },
+    { day: "Sat", value: 120 },
+    { day: "Sun", value: 95 }
+  ]
+
+  const [hoveredData, setHoveredData] = useState<{ day: string; value: number } | null>(null)
+  const [selectedMapPin, setSelectedMapPin] = useState<string | null>(null)
+
+  const gpsLocations = [
+    { id: "g_1", workerName: "John Doe", role: "Lead Crane Operator", lat: 37.7749, lng: -122.4194, zone: "Crane Operator Zone #3" },
+    { id: "g_2", workerName: "Sarah Jones", role: "Structural Welder", lat: 37.7752, lng: -122.4182, zone: "Sector B Scaffolding" },
+    { id: "g_3", workerName: "Dave Miller", role: "Safety Superintendent", lat: 37.7741, lng: -122.4201, zone: "Main Portal Gate A" }
+  ]
+
   return (
-    <div className="space-y-6 py-6 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative">
+    <div className="space-y-8 py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative">
       
       {/* Flashing SOS site shutdown overlay */}
       {isSosTriggered && (
@@ -272,7 +287,7 @@ export default function Safety() {
               </div>
               <div className="p-4 bg-muted/40 rounded-xl space-y-1.5 col-span-1 md:col-span-1">
                 <span className="font-bold block">EHS Work restriction advice:</span>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                <p className="text-[10px] text-muted-foreground leading-relaxed font-sans">
                   Heavy lifts at height must be stopped immediately. Scaffold ground crews should rotate shade breaks every 20 mins.
                 </p>
               </div>
@@ -282,9 +297,16 @@ export default function Safety() {
           {/* Interactive SVG Graphs */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-[#141B2D] border border-border rounded-2xl p-5 shadow-raised space-y-4">
-              <span className="font-heading font-extrabold text-xs text-slate-800 dark:text-white uppercase tracking-wider block border-b border-border pb-2">
-                Monthly Safety Incidents rate (TRIR Curve)
-              </span>
+              <div className="flex justify-between items-center border-b border-border pb-2">
+                <span className="font-heading font-extrabold text-xs text-slate-800 dark:text-white uppercase tracking-wider block">
+                  Monthly Safety Incidents rate (TRIR Curve)
+                </span>
+                {hoveredData && (
+                  <span className="text-[10px] font-bold bg-brand-safety/10 text-brand-safety px-2 py-0.5 rounded">
+                    {hoveredData.day}: {hoveredData.value} Incidents
+                  </span>
+                )}
+              </div>
               <div className="relative h-44 bg-muted/10 rounded-xl flex items-center justify-center">
                 <svg className="w-full h-full p-4" viewBox="0 0 500 200" preserveAspectRatio="none">
                   <line x1="0" y1="50" x2="500" y2="50" stroke="rgba(255,255,255,0.05)" strokeDasharray="3" />
@@ -296,7 +318,21 @@ export default function Safety() {
                     points="30,130 120,90 210,120 300,70 390,140 470,110"
                     strokeLinecap="round"
                   />
-                  <circle cx="300" cy="70" r="5" fill="var(--brand-danger)" />
+                  {attendanceTrend.map((d, idx) => {
+                    const x = 30 + idx * 70
+                    const y = 200 - (d.value / 370) * 160
+                    return (
+                      <circle
+                        key={idx}
+                        cx={x}
+                        cy={y}
+                        r="6"
+                        className="fill-brand-danger hover:fill-brand-safety transition-all cursor-pointer"
+                        onMouseEnter={() => setHoveredData(d)}
+                        onMouseLeave={() => setHoveredData(null)}
+                      />
+                    )
+                  })}
                 </svg>
                 <div className="absolute bottom-2 left-0 right-0 flex justify-between px-8 text-[9px] font-bold text-muted-foreground font-mono">
                   <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
@@ -310,7 +346,6 @@ export default function Safety() {
               </span>
               <div className="relative h-44 bg-muted/10 rounded-xl flex items-center justify-center">
                 <svg className="w-full h-full p-4" viewBox="0 0 500 200">
-                  {/* Custom columns */}
                   <rect x="50" y="30" width="30" height="150" fill="var(--brand-success)" rx="4" />
                   <text x="65" y="25" textAnchor="middle" fontSize="9" fontWeight="bold" fill="white">98%</text>
                   <text x="65" y="195" textAnchor="middle" fontSize="9" fill="var(--muted-foreground)">Helmet</text>
@@ -358,10 +393,10 @@ export default function Safety() {
               <div key={idx} className="p-4 border border-border rounded-xl flex items-center justify-between text-xs hover:bg-muted/10 transition-colors">
                 <div>
                   <p className="font-bold text-slate-800 dark:text-white">{audit.target}</p>
-                  <p className="text-[10px] text-muted-foreground">Auditor: {audit.auditor} • Date: {audit.date}</p>
+                  <p className="text-[10px] text-muted-foreground font-mono">Auditor: {audit.auditor} • Date: {audit.date}</p>
                 </div>
                 <div className="text-right space-y-1">
-                  <p className="font-bold text-slate-800 dark:text-white">{audit.score}% Score</p>
+                  <p className="font-bold text-slate-800 dark:text-white font-mono">{audit.score}% Score</p>
                   <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded ${
                     audit.status === 'Pass' ? 'bg-brand-success/10 text-brand-success' : 'bg-brand-danger/10 text-brand-danger'
                   }`}>
@@ -401,7 +436,7 @@ export default function Safety() {
                 placeholder="Search by hazard name, location..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs rounded-lg"
+                className="w-full pl-9 pr-4 py-2 border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs rounded-lg text-left"
               />
               <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-2.5" />
             </div>
@@ -489,7 +524,12 @@ export default function Safety() {
                       }`}>
                         {inc.severity}
                       </span>
-                      <h4 className="font-heading font-extrabold text-sm text-slate-800 dark:text-white">{inc.title}</h4>
+                      <Link
+                        to={`/safety/${inc.id}`}
+                        className="font-heading font-extrabold text-sm text-slate-800 dark:text-white hover:text-brand-safety transition-colors"
+                      >
+                        {inc.title}
+                      </Link>
                     </div>
                     <p className="text-[10px] text-muted-foreground font-mono">Logged: {inc.loggedAt} • ID: {inc.id}</p>
                   </div>
@@ -503,8 +543,8 @@ export default function Safety() {
                 {/* Root Cause Analysis (Five Whys) */}
                 {inc.rootCause.length > 0 && (
                   <div className="p-3.5 bg-muted/30 border border-border/40 rounded-xl space-y-2">
-                    <span className="font-bold text-slate-500 font-mono text-[10px] block">Root Cause Investigation Summary:</span>
-                    <ol className="list-decimal pl-4 space-y-1 text-[11px] text-muted-foreground leading-relaxed">
+                    <span className="font-bold text-slate-500 font-mono text-[10px] block text-left">Root Cause Investigation Summary:</span>
+                    <ol className="list-decimal pl-4 space-y-1 text-[11px] text-muted-foreground leading-relaxed text-left">
                       {inc.rootCause.map((why, idx) => <li key={idx}>{why}</li>)}
                     </ol>
                   </div>
@@ -550,7 +590,6 @@ export default function Safety() {
             <div className="lg:col-span-8 relative h-96 bg-black border border-slate-700 rounded-xl overflow-hidden flex items-center justify-center select-none">
               {isCameraActive ? (
                 <>
-                  {/* Bounding box mock drawings */}
                   <div className="absolute top-12 left-24 border-2 border-brand-success p-2 rounded text-[10px] font-bold text-brand-success font-mono z-10 bg-black/40">
                     🟢 Helmet: 99% confidence
                   </div>
@@ -664,32 +703,52 @@ export default function Safety() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Evac map simulator */}
             <div className="lg:col-span-8 relative h-96 bg-muted/20 border border-border/30 rounded-xl overflow-hidden flex items-center justify-center">
               
-              {/* Custom SVG Maps Overlay */}
               <svg className="w-full h-full p-4" viewBox="0 0 500 300">
-                {/* Assembly zone A */}
                 <circle cx="120" cy="100" r="45" fill="rgba(34,197,94,0.08)" stroke="var(--brand-success)" strokeWidth="2" strokeDasharray="3" />
                 <text x="120" y="103" textAnchor="middle" fontSize="9" fontWeight="bold" fill="var(--brand-success)" className="font-mono">ASSEMBLY A</text>
 
-                {/* Evacuation paths lines */}
                 <path d="M 120 145 Q 200 180 320 180" fill="none" stroke="var(--brand-success)" strokeWidth="2.5" strokeDasharray="5" />
                 <text x="210" y="170" fontSize="8" fill="var(--brand-success)" className="font-mono">EVAC CORRIDOR</text>
 
-                {/* Scaffold zone B danger bounds */}
                 <circle cx="370" cy="180" r="40" fill="rgba(239,68,68,0.05)" stroke="var(--brand-danger)" strokeWidth="1" />
                 <text x="370" y="183" textAnchor="middle" fontSize="9" fontWeight="bold" fill="var(--brand-danger)" className="font-mono">DANGER ZONE</text>
+                
+                {gpsLocations.map((loc, idx) => {
+                  const isHovered = selectedMapPin === loc.id
+                  const cx = 150 + (idx * 100)
+                  const cy = 100 + (idx * 40)
+                  return (
+                    <g key={loc.id} className="cursor-pointer" onClick={() => setSelectedMapPin(loc.id)}>
+                      <circle cx={cx} cy={cy} r={isHovered ? "10" : "7"} className={`${isHovered ? 'fill-brand-safety' : 'fill-brand-accent'} transition-all`} />
+                    </g>
+                  )
+                })}
               </svg>
 
-              {/* Legend overlay */}
-              <div className="absolute top-3 left-3 bg-[#101625]/85 border border-border p-2.5 rounded-lg text-[9px] font-bold text-slate-350 space-y-1 font-mono">
+              <div className="absolute top-3 left-3 bg-[#101625]/85 border border-border p-2.5 rounded-lg text-[9px] font-bold text-slate-355 space-y-1 font-mono">
                 <p className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-brand-success"></span> Assembly Corridor</p>
                 <p className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-brand-danger"></span> High Risk Excavation</p>
               </div>
+
+              {selectedMapPin && (() => {
+                const loc = gpsLocations.find(l => l.id === selectedMapPin)
+                if (!loc) return null
+                return (
+                  <div className="absolute bottom-4 left-4 right-4 bg-[#101625]/90 border border-brand-safety p-3 rounded-lg text-left text-xs animate-fade-in flex justify-between items-center">
+                    <div>
+                      <p className="font-bold text-white">{loc.workerName} ({loc.role})</p>
+                      <p className="text-[10px] text-slate-355 font-mono">Zone: {loc.zone} • Lat/Lng: {loc.lat}, {loc.lng}</p>
+                    </div>
+                    <button onClick={() => setSelectedMapPin(null)} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )
+              })()}
             </div>
 
-            {/* Emergency Info list sidebar */}
             <div className="lg:col-span-4 space-y-4 text-xs">
               <div className="p-4 bg-brand-danger/5 border border-brand-danger/20 rounded-xl space-y-2">
                 <span className="font-bold text-brand-danger block">SOS Assembly Contacts:</span>
