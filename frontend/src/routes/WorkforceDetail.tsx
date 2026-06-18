@@ -3,19 +3,14 @@ import { useParams, Link } from 'react-router-dom'
 import { useWorkforceStore } from '../store/workforceStore'
 import {
   ArrowLeft,
-  AlertTriangle,
-  History,
   Send,
-  Plus,
   Sparkles,
-  ClipboardCheck,
   Building2,
-  Mail,
-  User,
   Clock,
   ShieldAlert,
   CalendarDays,
-  Activity
+  Activity,
+  X
 } from 'lucide-react'
 
 export default function WorkforceDetail() {
