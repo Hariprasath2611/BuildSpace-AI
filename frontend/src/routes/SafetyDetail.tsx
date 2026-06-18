@@ -3,13 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { useSafetyStore } from '../store/safetyStore'
 import {
   ArrowLeft,
-  ShieldAlert,
   Send,
-  Plus,
-  Trash2,
-  FileText,
-  Activity,
-  CheckCircle2
+  FileText
 } from 'lucide-react'
 
 export default function SafetyDetail() {
