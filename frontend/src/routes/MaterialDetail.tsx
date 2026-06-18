@@ -284,7 +284,7 @@ export default function MaterialDetail() {
                       </div>
                       <div className="text-right">
                         <span className="px-2.5 py-1 bg-muted rounded font-mono font-bold text-[10px]">
-                          Zone B -> Row B1
+                          {"Zone B -> Row B1"}
                         </span>
                       </div>
                     </div>
