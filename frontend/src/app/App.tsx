@@ -2,50 +2,32 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import {
   Hammer,
-  LayoutDashboard,
-  ShieldAlert,
-  Sparkles,
   Menu,
   X,
-  Wifi,
-  WifiOff,
   Sun,
   Moon,
+  ArrowRight,
+  ShieldCheck,
   Send,
-  FolderGit2,
-  CheckCircle2,
-  AlertTriangle,
-  TrendingUp,
-  Clock,
-  Compass
+  Github
 } from 'lucide-react'
 
-// Mock Stores for Zustand replacement demonstration
-const useStoreSimulation = () => {
-  const [user] = useState({ name: 'D. Hariprasath', role: 'Superintendent', organization: 'Apex Builders Inc.' })
-  const [notifications] = useState([
-    { id: 1, text: 'Safety: Class 2 hazard detected on Tower A Level 4', type: 'hazard' },
-    { id: 2, text: 'Schedule: Concrete pour delayed by 2 hours', type: 'delay' }
-  ])
-  return { user, notifications }
-}
+// Import Marketing Pages via @ path aliases
+import Home from '@/routes/Home'
+import Features from '@/routes/Features'
+import Pricing from '@/routes/Pricing'
+import Solutions from '@/routes/Solutions'
+import AICenter from '@/routes/AI'
+import Security from '@/routes/Security'
+import Contact from '@/routes/Contact'
+import Auth from '@/routes/Auth'
 
-// Global Layout Wrapper
 function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user } = useStoreSimulation()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [isCopilotOpen, setIsCopilotOpen] = useState(true)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const [isOnline, setIsOnline] = useState(true)
+  const [newsletterEmail, setNewsletterEmail] = useState("")
+  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false)
   const location = useLocation()
-
-  // Simulating connection fluctuations
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsOnline((prev) => !prev)
-    }, 45000) // Alternate every 45s for demo
-    return () => clearInterval(interval)
-  }, [])
 
   useEffect(() => {
     if (isDarkMode) {
@@ -55,469 +37,248 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [isDarkMode])
 
-  const navigationItems = [
-    { name: 'Overview', path: '/', icon: LayoutDashboard },
-    { name: 'Projects', path: '/projects', icon: FolderGit2 },
-    { name: 'Safety Logs', path: '/safety', icon: ShieldAlert }
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [location.pathname])
+
+  const navLinks = [
+    { name: 'Features', path: '/features' },
+    { name: 'Solutions', path: '/solutions' },
+    { name: 'Pricing', path: '/pricing' },
+    { name: 'AI Center', path: '/ai' },
+    { name: 'Security', path: '/security' }
   ]
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newsletterEmail.includes('@')) return
+    setNewsletterSubscribed(true)
+  }
 
   return (
     <div className="min-h-screen bg-brand-lightgray dark:bg-brand-obsidian text-foreground transition-colors duration-200 flex flex-col font-sans">
-      {/* Top Banner Navigation */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-white/85 dark:bg-brand-obsidian/85 backdrop-blur-md px-4 py-3">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-1.5 hover:bg-muted rounded-md md:hidden"
-            aria-label="Toggle Navigation"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          
-          <div className="flex items-center gap-2">
-            <div className="relative p-2 bg-brand-safety rounded-md text-white flex items-center justify-center shadow-lg shadow-brand-safety/20">
-              <Hammer className="w-5 h-5 animate-bounce-slow" />
+      {/* Announcement Bar */}
+      <div className="bg-brand-obsidian text-slate-300 dark:bg-slate-900 border-b border-slate-800 text-[11px] py-2 px-4 text-center font-semibold">
+        🚀 RAG Construction GPT and volumetric site scans are now live.{' '}
+        <Link to="/ai" className="text-brand-accent hover:underline inline-flex items-center gap-0.5 ml-1">
+          Try AI Sandbox <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+
+      {/* Global Header */}
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-white/85 dark:bg-brand-obsidian/85 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3.5">
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="p-2 bg-brand-safety rounded-md text-white flex items-center justify-center shadow shadow-brand-safety/20">
+              <Hammer className="w-4.5 h-4.5" />
             </div>
-            <span className="font-heading font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-brand-safety to-brand-accent bg-clip-text text-transparent">
+            <span className="font-heading font-extrabold text-lg tracking-tight bg-gradient-to-r from-brand-safety to-brand-accent bg-clip-text text-transparent">
               BuildSpace AI
             </span>
-          </div>
+          </Link>
 
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-            <span className="w-2 h-2 rounded-full bg-brand-success"></span>
-            {user.organization}
-          </div>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-5 text-xs font-semibold text-muted-foreground hover:text-foreground">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`transition-colors ${
+                  location.pathname === link.path ? 'text-brand-safety' : 'hover:text-foreground'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        {/* Global Controls */}
-        <div className="flex items-center gap-3">
-          {/* Offline/Online Indicator */}
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-            isOnline ? 'bg-brand-success/15 text-brand-success' : 'bg-brand-safety/15 text-brand-safety'
-          }`}>
-            {isOnline ? (
-              <>
-                <Wifi className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Connected</span>
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-3.5 h-3.5 animate-pulse-slow" />
-                <span className="hidden sm:inline">Offline (Draft Mode)</span>
-              </>
-            )}
-          </div>
-
-          {/* Theme Toggler */}
+        {/* Global Action CTAs */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Theme Toggle */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="p-2 hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg transition-colors border border-border"
-            title={isDarkMode ? 'Switch to Construction Site Mode' : 'Switch to Obsidian Dark Mode'}
+            title={isDarkMode ? 'Construction Site Mode (Light)' : 'Obsidian Mode (Dark)'}
           >
             {isDarkMode ? <Sun className="w-4 h-4 text-brand-safety" /> : <Moon className="w-4 h-4 text-brand-obsidian" />}
           </button>
+          
+          <Link
+            to="/login"
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/signup"
+            className="px-4 py-2 bg-brand-safety hover:bg-brand-safety/90 text-white text-xs font-semibold rounded-lg shadow shadow-brand-safety/15 transition-all flex items-center gap-1"
+          >
+            Start Free Trial
+          </Link>
+        </div>
 
-          {/* User Profile */}
-          <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-border">
-            <div className="w-8 h-8 rounded-full bg-brand-accent/20 border border-brand-accent flex items-center justify-center font-bold text-sm text-brand-accent">
-              DH
-            </div>
-            <div className="text-left">
-              <p className="text-xs font-semibold leading-tight">{user.name}</p>
-              <p className="text-[10px] text-muted-foreground">{user.role}</p>
-            </div>
-          </div>
+        {/* Mobile menu trigger */}
+        <div className="flex items-center gap-3 md:hidden">
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-1.5 hover:bg-muted text-muted-foreground rounded-md"
+          >
+            {isDarkMode ? <Sun className="w-4 h-4 text-brand-safety" /> : <Moon className="w-4 h-4" />}
+          </button>
+
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-1.5 hover:bg-muted rounded-md text-muted-foreground"
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </header>
 
-      {/* Main Body */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Navigation Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-40 transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:relative md:translate-x-0 transition-transform duration-200 border-r border-border bg-white dark:bg-[#101625] w-64 flex flex-col pt-16 md:pt-0`}>
-          <div className="p-4 flex-1 flex flex-col gap-2">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground px-3 mb-1">
-              Modules
-            </p>
-            {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = location.pathname === item.path
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-brand-safety text-white shadow-lg shadow-brand-safety/15'
-                      : 'hover:bg-muted text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="p-4 border-t border-border bg-muted/40">
-            <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-              <span>Sync status</span>
-              <span className="font-semibold text-brand-success">Synced</span>
-            </div>
-            <div className="w-full bg-muted rounded-full h-1.5">
-              <div className="bg-brand-success h-1.5 rounded-full w-full"></div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Content Panel */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
-        </main>
-
-        {/* Collapsible Right AI Copilot Panel */}
-        <aside className={`fixed inset-y-0 right-0 z-40 transform ${
-          isCopilotOpen ? 'translate-x-0' : 'translate-x-full'
-        } xl:relative xl:translate-x-0 transition-transform duration-200 border-l border-border bg-[#101625] text-slate-200 w-80 md:w-96 flex flex-col pt-16 xl:pt-0 shadow-2xl`}>
-          {/* Header */}
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-brand-obsidian">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-brand-accent/20 rounded-md text-brand-accent">
-                <Sparkles className="w-4 h-4 animate-ai-pulse" />
-              </div>
-              <div>
-                <span className="font-heading font-bold text-sm tracking-tight text-white block">
-                  AI Copilot
-                </span>
-                <span className="text-[10px] text-slate-400">RAG Construction Engine v1.0</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsCopilotOpen(false)}
-              className="xl:hidden p-1.5 hover:bg-slate-800 rounded-md"
+      {/* Mobile Menu Panel */}
+      {isMenuOpen && (
+        <div className="md:hidden border-b border-border bg-white dark:bg-brand-obsidian p-4 space-y-3 flex flex-col text-xs font-semibold">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`py-2 border-b border-border last:border-0 ${
+                location.pathname === link.path ? 'text-brand-safety' : 'text-muted-foreground'
+              }`}
             >
-              <X className="w-4 h-4" />
-            </button>
+              {link.name}
+            </Link>
+          ))}
+          <div className="flex flex-col gap-2 pt-2">
+            <Link
+              to="/login"
+              className="py-2 text-center text-muted-foreground border border-border rounded-lg"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="py-2.5 text-center bg-brand-safety text-white rounded-lg shadow shadow-brand-safety/10"
+            >
+              Start Free Trial
+            </Link>
           </div>
-
-          {/* AI Chat History */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 text-xs">
-            {/* Copilot message */}
-            <div className="bg-slate-800/60 border border-slate-700/50 p-3 rounded-lg flex flex-col gap-2">
-              <p className="text-slate-300">
-                Welcome back! I've analyzed drawing revisions for the **Tower A Structural Framework**.
-              </p>
-              <div className="p-2 bg-brand-obsidian/85 rounded border border-brand-safety/20 flex flex-col gap-1">
-                <div className="flex items-center justify-between text-[10px] font-bold text-brand-safety">
-                  <span>CRITICAL RISK: Schedule Delay Prediction</span>
-                  <span>94% Confidence</span>
-                </div>
-                <p className="text-slate-400 text-[11px]">
-                  RFI delay on concrete formwork validation might block next Tuesday's pour.
-                </p>
-                <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
-                  <span>Source:</span>
-                  <a href="#cit" className="text-brand-accent hover:underline">[spec_formwork_2026.pdf]</a>
-                </div>
-              </div>
-            </div>
-
-            {/* User prompt examples */}
-            <div className="mt-2">
-              <p className="text-[10px] uppercase font-bold text-slate-500 mb-2">Suggested queries</p>
-              <div className="flex flex-col gap-1.5">
-                <button className="text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 text-slate-300 hover:text-white transition-colors">
-                  "Any safety clashes on concrete forms?"
-                </button>
-                <button className="text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 text-slate-300 hover:text-white transition-colors">
-                  "Show checklist completion rate for Project Apex."
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Input Box */}
-          <div className="p-4 border-t border-slate-800 bg-brand-obsidian">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Ask AI Copilot..."
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-3 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-accent"
-              />
-              <button className="absolute right-2.5 top-2 p-1 bg-brand-accent hover:bg-brand-accent/80 text-brand-obsidian rounded-md transition-colors">
-                <Send className="w-3 h-3" />
-              </button>
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      {/* Floating Copilot Toggle for smaller sizes */}
-      {!isCopilotOpen && (
-        <button
-          onClick={() => setIsCopilotOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-brand-accent text-brand-obsidian p-3.5 rounded-full shadow-2xl hover:scale-105 transition-all animate-bounce-slow"
-          title="Open AI Copilot"
-        >
-          <Sparkles className="w-5 h-5" />
-        </button>
+        </div>
       )}
-    </div>
-  )
-}
 
-// -------------------------------------------------------------
-// MODULE PAGES
-// -------------------------------------------------------------
+      {/* Main Pages Content wrapper */}
+      <main className="flex-1">
+        {children}
+      </main>
 
-// Page 1: Dashboard Overview
-function OverviewPage() {
-  return (
-    <div className="space-y-6">
-      {/* Page Title */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">
-          Construction Intelligence Control Center
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Real-time performance index, schedules, and active threat matrices.
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Formwork Completion', value: '78.4%', trend: '+4.2% this week', type: 'progress', icon: CheckCircle2, color: 'text-brand-success' },
-          { label: 'Active Schedule Path', value: 'On Track', trend: 'Critical pour upcoming', type: 'status', icon: Clock, color: 'text-brand-accent' },
-          { label: 'Unresolved RFIs', value: '4 Urgent', trend: '2 predicting delays', type: 'info', icon: Compass, color: 'text-brand-safety' },
-          { label: 'Open Safety Observations', value: '1 Hazard', trend: 'Safety score: 98/100', type: 'warning', icon: ShieldAlert, color: 'text-brand-danger' }
-        ].map((stat, i) => {
-          const Icon = stat.icon;
-          return (
-            <div key={i} className="bg-white dark:bg-[#141B2D] p-4 rounded-xl border border-border shadow-raised flex items-start justify-between">
-              <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{stat.label}</p>
-                <p className="text-2xl font-bold font-heading">{stat.value}</p>
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-brand-success" />
-                  {stat.trend}
-                </p>
+      {/* Global conversion Footer */}
+      <footer className="bg-white dark:bg-brand-obsidian border-t border-border py-12 text-xs text-muted-foreground mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-8">
+          {/* Logo & Info column */}
+          <div className="md:col-span-4 space-y-4 text-left">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-brand-safety rounded text-white flex items-center justify-center">
+                <Hammer className="w-4 h-4" />
               </div>
-              <div className={`p-2 bg-muted/60 dark:bg-slate-800/40 rounded-lg ${stat.color}`}>
-                <Icon className="w-5 h-5" />
+              <span className="font-heading font-extrabold text-sm tracking-tight text-slate-800 dark:text-white">
+                BuildSpace AI
+              </span>
+            </div>
+            <p className="leading-relaxed max-w-xs">
+              The AI Operating System for Modern Construction. Forecasting project delay indices, safety compliance, and cost overruns.
+            </p>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-brand-success" />
+              <span className="font-bold text-[10px] uppercase text-slate-600 dark:text-slate-400">SOC 2 Type II Certified</span>
+            </div>
+          </div>
+
+          {/* Nav columns */}
+          <div className="md:col-span-4 grid grid-cols-2 gap-4 text-left">
+            <div className="space-y-2">
+              <span className="font-bold text-slate-800 dark:text-slate-200 block">Product</span>
+              <div className="flex flex-col gap-1.5">
+                <Link to="/features" className="hover:text-foreground">SaaS Modules</Link>
+                <Link to="/solutions" className="hover:text-foreground">Roster Solutions</Link>
+                <Link to="/pricing" className="hover:text-foreground">Pricing Plans</Link>
+                <Link to="/ai" className="hover:text-foreground">AI Sandboxes</Link>
               </div>
             </div>
-          )
-        })}
-      </div>
-
-      {/* Main Grid: Schedule View & Risk Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Schedule timeline */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#141B2D] border border-border rounded-xl p-5 shadow-raised">
-          <div className="flex items-center justify-between mb-4 border-b border-border pb-3">
-            <h3 className="font-heading font-bold text-base">Gantt Schedule View</h3>
-            <span className="text-xs px-2.5 py-1 bg-brand-safety/10 text-brand-safety font-medium rounded-full">
-              Critical Path
-            </span>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              { task: 'Level 2 Structural Slab Concrete', progress: 100, date: 'June 10 - June 14', status: 'Completed', color: 'bg-brand-success' },
-              { task: 'Formwork and Rebar Level 3 Tower B', progress: 65, date: 'June 15 - June 20', status: 'Active (On Critical Path)', color: 'bg-brand-safety animate-pulse-slow' },
-              { task: 'Electrical Conduit rough-ins', progress: 10, date: 'June 21 - June 24', status: 'Delayed - Awaiting Inspector', color: 'bg-brand-danger' }
-            ].map((item, i) => (
-              <div key={i} className="space-y-1">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-1">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{item.task}</span>
-                  <span className="text-muted-foreground">{item.date} • {item.status}</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div className={`h-2 rounded-full ${item.color}`} style={{ width: `${item.progress}%` }}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Risk Grid */}
-        <div className="bg-white dark:bg-[#141B2D] border border-border rounded-xl p-5 shadow-raised">
-          <h3 className="font-heading font-bold text-base mb-4 border-b border-border pb-3">
-            Active Risk Matrix (5x5)
-          </h3>
-          <div className="grid grid-cols-5 gap-1.5 text-center text-[10px] font-bold text-white mb-2">
-            {/* 5x5 Mock Heatmap grid (from low to critical) */}
-            <div className="bg-brand-success p-2 rounded">1</div>
-            <div className="bg-brand-success p-2 rounded">2</div>
-            <div className="bg-amber-400 p-2 rounded">3</div>
-            <div className="bg-brand-safety p-2 rounded">4</div>
-            <div className="bg-brand-danger p-2 rounded animate-pulse-slow">5</div>
-            <div className="bg-brand-success p-2 rounded">2</div>
-            <div className="bg-amber-400 p-2 rounded">4</div>
-            <div className="bg-brand-safety p-2 rounded">6</div>
-            <div className="bg-brand-danger p-2 rounded">8</div>
-            <div className="bg-brand-danger p-2 rounded">10</div>
-            <div className="bg-amber-400 p-2 rounded">3</div>
-            <div className="bg-brand-safety p-2 rounded">6</div>
-            <div className="bg-brand-safety p-2 rounded">9</div>
-            <div className="bg-brand-danger p-2 rounded">12</div>
-            <div className="bg-brand-danger p-2 rounded">15</div>
-            <div className="bg-brand-safety p-2 rounded">4</div>
-            <div className="bg-brand-danger p-2 rounded">8</div>
-            <div className="bg-brand-danger p-2 rounded">12</div>
-            <div className="bg-brand-danger p-2 rounded">16</div>
-            <div className="bg-brand-danger p-2 rounded">20</div>
-            <div className="bg-brand-danger p-2 rounded">5</div>
-            <div className="bg-brand-danger p-2 rounded">10</div>
-            <div className="bg-brand-danger p-2 rounded">15</div>
-            <div className="bg-brand-danger p-2 rounded">20</div>
-            <div className="bg-brand-danger p-2 rounded">25</div>
-          </div>
-          <div className="flex items-center gap-2 mt-3 text-xs justify-between">
-            <span className="text-brand-success flex items-center gap-1">🟢 Low Risk</span>
-            <span className="text-brand-safety flex items-center gap-1">🟠 High Risk</span>
-            <span className="text-brand-danger flex items-center gap-1">🔴 Critical Clash</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Page 2: Projects Module
-function ProjectsPage() {
-  const [projects] = useState([
-    { id: 1, name: 'Tower A Residences', location: 'Bengaluru, India', budget: '$45.2M', progress: 78, hazards: 0 },
-    { id: 2, name: 'APEX Commercial Hub', location: 'San Jose, CA', budget: '$124.0M', progress: 45, hazards: 1 },
-    { id: 3, name: 'Metro Line Underground', location: 'Mumbai, India', budget: '$210.5M', progress: 12, hazards: 4 }
-  ])
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">Active Projects</h1>
-        <p className="text-sm text-muted-foreground">Manage organization construction scopes, financial profiles, and field telemetry.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <div key={project.id} className="bg-white dark:bg-[#141B2D] border border-border rounded-xl p-5 shadow-raised flex flex-col justify-between h-56">
-            <div>
-              <div className="flex justify-between items-start">
-                <h3 className="font-heading font-bold text-lg text-slate-800 dark:text-white">{project.name}</h3>
-                {project.hazards > 0 && (
-                  <span className="text-[10px] bg-brand-danger/10 text-brand-danger border border-brand-danger/25 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1 animate-pulse-slow">
-                    <AlertTriangle className="w-3 h-3" />
-                    {project.hazards} Alerts
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mb-4">{project.location}</p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Authorized Budget</span>
-                <span className="font-semibold">{project.budget}</span>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">Execution Progress</span>
-                  <span className="font-bold">{project.progress}%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-brand-accent h-2 rounded-full" style={{ width: `${project.progress}%` }}></div>
-                </div>
+            <div className="space-y-2">
+              <span className="font-bold text-slate-800 dark:text-slate-200 block">Trust & Legal</span>
+              <div className="flex flex-col gap-1.5">
+                <Link to="/security" className="hover:text-foreground">Trust Center</Link>
+                <a href="#privacy" className="hover:text-foreground">Privacy Policy</a>
+                <a href="#terms" className="hover:text-foreground">Terms of Service</a>
+                <a href="#status" className="hover:text-foreground flex items-center gap-1">
+                  Status <span className="w-2.5 h-2.5 rounded-full bg-brand-success block"></span>
+                </a>
               </div>
             </div>
           </div>
-        ))}
-      </div>
+
+          {/* Newsletter signup column */}
+          <div className="md:col-span-4 space-y-3 text-left">
+            <span className="font-bold text-slate-800 dark:text-slate-200 block">Subscribe to Site Reports</span>
+            <p className="leading-relaxed max-w-xs">
+              Get monthly newsletters detailing artificial intelligence progress indices in the construction industry.
+            </p>
+            
+            {newsletterSubscribed ? (
+              <div className="p-2.5 bg-brand-success/10 border border-brand-success/20 rounded-lg text-brand-success text-[11px] font-bold">
+                Thank you! You have been subscribed.
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="name@company.com"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  className="flex-1 p-2 rounded border border-border bg-transparent focus:outline-none focus:border-brand-safety text-xs"
+                />
+                <button
+                  type="submit"
+                  className="p-2 bg-brand-obsidian text-white dark:bg-white dark:text-brand-obsidian hover:opacity-90 rounded transition-all flex items-center justify-center"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© 2026 BuildSpace AI Inc. All rights reserved.</p>
+          <div className="flex items-center gap-3">
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-foreground">
+              <Github className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
 
-// Page 3: Safety Module
-function SafetyPage() {
-  const [logs] = useState([
-    { id: 1, type: 'Clash Alert', detail: 'Slab reinforcement steel colliding with plumbing conduits', severity: 'High', area: 'Tower A Level 3', status: 'Open' },
-    { id: 2, type: 'Hazard Warning', detail: 'Missing perimeter scaffolding netting', severity: 'Critical', area: 'Building B East Face', status: 'Reviewing' },
-    { id: 3, type: 'Routine Inspection', detail: 'Personal Protective Equipment compliance audit', severity: 'Low', area: 'Entire Site', status: 'Resolved' }
-  ])
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">Safety & Compliance Log</h1>
-        <p className="text-sm text-muted-foreground">Real-time warning tracking, WCAG / OSHA inspection templates, and incident reporting.</p>
-      </div>
-
-      <div className="bg-white dark:bg-[#141B2D] border border-border rounded-xl overflow-hidden shadow-raised">
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <h3 className="font-heading font-bold text-base">Active Site Observations</h3>
-          <button className="text-xs bg-brand-safety text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-brand-safety/90 transition-colors shadow-lg shadow-brand-safety/15">
-            Log New Observation
-          </button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-muted/50 dark:bg-slate-800/40 text-muted-foreground font-semibold border-b border-border">
-                <th className="p-3">Type</th>
-                <th className="p-3">Detail</th>
-                <th className="p-3">Severity</th>
-                <th className="p-3">Area</th>
-                <th className="p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-muted/20 dark:hover:bg-slate-800/20">
-                  <td className="p-3 font-semibold">{log.type}</td>
-                  <td className="p-3 text-muted-foreground">{log.detail}</td>
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
-                      log.severity === 'Critical' ? 'bg-brand-danger/10 text-brand-danger' :
-                      log.severity === 'High' ? 'bg-brand-safety/10 text-brand-safety' : 'bg-brand-success/10 text-brand-success'
-                    }`}>
-                      {log.severity}
-                    </span>
-                  </td>
-                  <td className="p-3">{log.area}</td>
-                  <td className="p-3">
-                    <span className="flex items-center gap-1.5">
-                      <span className={`w-2.5 h-2.5 rounded-full ${
-                        log.status === 'Resolved' ? 'bg-brand-success' :
-                        log.status === 'Open' ? 'bg-brand-danger animate-pulse-slow' : 'bg-amber-400'
-                      }`}></span>
-                      {log.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// -------------------------------------------------------------
-// APP ENTRY POINT WITH ROUTER
-// -------------------------------------------------------------
 export default function App() {
   return (
     <BrowserRouter>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<OverviewPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/safety" element={<SafetyPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/ai" element={<AICenter />} />
+          <Route path="/security" element={<Security />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Auth mode="login" />} />
+          <Route path="/signup" element={<Auth mode="signup" />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
