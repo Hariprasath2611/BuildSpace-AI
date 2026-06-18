@@ -7,27 +7,23 @@ import {
   Sparkles,
   Menu,
   X,
-  Search,
   Wifi,
   WifiOff,
   Sun,
   Moon,
   Send,
-  ListTodo,
   FolderGit2,
-  Bell,
   CheckCircle2,
   AlertTriangle,
   TrendingUp,
   Clock,
-  Compass,
-  ArrowRight
+  Compass
 } from 'lucide-react'
 
 // Mock Stores for Zustand replacement demonstration
 const useStoreSimulation = () => {
-  const [user, setUser] = useState({ name: 'D. Hariprasath', role: 'Superintendent', organization: 'Apex Builders Inc.' })
-  const [notifications, setNotifications] = useState([
+  const [user] = useState({ name: 'D. Hariprasath', role: 'Superintendent', organization: 'Apex Builders Inc.' })
+  const [notifications] = useState([
     { id: 1, text: 'Safety: Class 2 hazard detected on Tower A Level 4', type: 'hazard' },
     { id: 2, text: 'Schedule: Concrete pour delayed by 2 hours', type: 'delay' }
   ])
@@ -36,7 +32,7 @@ const useStoreSimulation = () => {
 
 // Global Layout Wrapper
 function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user, notifications } = useStoreSimulation()
+  const { user } = useStoreSimulation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isCopilotOpen, setIsCopilotOpen] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(true)
@@ -446,7 +442,7 @@ function ProjectsPage() {
 
 // Page 3: Safety Module
 function SafetyPage() {
-  const [logs, setLogs] = useState([
+  const [logs] = useState([
     { id: 1, type: 'Clash Alert', detail: 'Slab reinforcement steel colliding with plumbing conduits', severity: 'High', area: 'Tower A Level 3', status: 'Open' },
     { id: 2, type: 'Hazard Warning', detail: 'Missing perimeter scaffolding netting', severity: 'Critical', area: 'Building B East Face', status: 'Reviewing' },
     { id: 3, type: 'Routine Inspection', detail: 'Personal Protective Equipment compliance audit', severity: 'Low', area: 'Entire Site', status: 'Resolved' }
