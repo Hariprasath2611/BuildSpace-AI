@@ -14,9 +14,7 @@ import {
   Sparkles,
   Barcode,
   Package,
-  Layers,
-  MapPin,
-  FileText
+  Layers
 } from 'lucide-react'
 
 export default function Materials() {
