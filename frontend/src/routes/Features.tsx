@@ -1,14 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FolderGit2,
   Hammer,
   ShieldAlert,
   Sparkles,
-  Check,
-  TrendingUp,
-  FileText,
-  Clock
+  Check
 } from 'lucide-react'
 
 const MODULE_DATA = [
