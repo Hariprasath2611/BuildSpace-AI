@@ -2,13 +2,11 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useProjectStore } from '../store/projectStore'
 import {
-  FolderGit2,
   Plus,
   Search,
   AlertTriangle,
   ArrowRight,
   X,
-  Compass,
   DollarSign
 } from 'lucide-react'
 
