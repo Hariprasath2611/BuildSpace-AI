@@ -39,8 +39,8 @@ export default function Auth({ mode }: AuthProps) {
         return
       }
 
-      // Successful auth - redirect to internal portal preview
-      navigate('/')
+      // Successful auth - redirect to MFA verification
+      navigate('/verify-mfa')
     }, 1200)
   }
 
