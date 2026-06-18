@@ -40,6 +40,7 @@ export default function CommandPalette() {
 
   const commands = [
     { name: "Go to Homepage", action: () => navigate('/'), icon: Compass, type: "nav" },
+    { name: "Go to Projects", action: () => { navigate('/projects'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Features", action: () => navigate('/features'), icon: FolderGit2, type: "nav" },
     { name: "Go to Pricing", action: () => navigate('/pricing'), icon: FolderGit2, type: "nav" },
     { name: "Go to Admin console", action: () => navigate('/admin'), icon: Lock, type: "nav" },

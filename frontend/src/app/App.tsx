@@ -32,6 +32,8 @@ import SelectOrg from '@/routes/SelectOrg'
 import ForgotPassword from '@/routes/ForgotPassword'
 import MFA from '@/routes/MFA'
 import Admin from '@/routes/Admin'
+import Projects from '@/routes/Projects'
+import ProjectDetail from '@/routes/ProjectDetail'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -105,6 +107,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
   const protectedLinks = [
     { name: 'Dashboard Control', path: '/', icon: LayoutDashboard },
+    { name: 'Projects Directory', path: '/projects', icon: FolderGit2 },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
@@ -482,6 +485,8 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-mfa" element={<MFA />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:projectId" element={<ProjectDetail />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
