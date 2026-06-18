@@ -246,7 +246,7 @@ export default function Workforce() {
               <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block">Today's Attendance</span>
               <p className="text-2xl font-bold font-heading">{todayAttendance} active / {workers.length} sched</p>
               <span className="text-[10px] font-bold text-brand-success">
-                🟢 {Math.round((todayAttendance / (workers.length || 1)) * 100)}% Compliance ACR
+                🟢 {activeCount} checked in inside geofenced zones
               </span>
             </div>
 
@@ -255,7 +255,7 @@ export default function Workforce() {
               <p className="text-2xl font-bold font-heading">
                 {shifts.filter(s => s.type !== 'Off').length} Assigned
               </p>
-              <span className="text-[10px] font-bold text-brand-success">🟢 Rotations stable</span>
+              <span className="text-[10px] font-bold text-brand-success">🟢 {directCount} Direct Employees Active</span>
             </div>
 
             <div className="bg-white dark:bg-[#141B2D] border border-border rounded-xl p-5 shadow-raised space-y-1">
