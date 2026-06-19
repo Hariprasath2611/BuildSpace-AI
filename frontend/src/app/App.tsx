@@ -522,6 +522,7 @@ export default function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/detail" element={<AnalyticsDetail />} />
           <Route path="/client" element={<ClientPortal />} />
+          <Route path="/contractor" element={<ContractorPortal />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
