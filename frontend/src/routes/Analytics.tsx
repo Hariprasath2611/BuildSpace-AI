@@ -11,12 +11,10 @@ import {
   Settings,
   Plus,
   Trash2,
-  Check,
   X,
   ChevronRight,
   Download,
   Mail,
-  PlusCircle,
   Calendar,
   Briefcase,
   ShieldCheck
