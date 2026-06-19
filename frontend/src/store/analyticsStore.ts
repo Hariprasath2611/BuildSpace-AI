@@ -96,7 +96,7 @@ const INITIAL_FORECASTS: Record<string, ForecastDataPoint[]> = {
   ]
 }
 
-export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
+export const useAnalyticsStore = create<AnalyticsState>((set) => ({
   kpis: INITIAL_KPIS,
   schedules: INITIAL_SCHEDULES,
   customReportFields: INITIAL_FIELDS,
