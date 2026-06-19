@@ -1,47 +1,34 @@
 import React, { useState, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Hammer,
   Sparkles,
   Layers,
   Activity,
-  Calendar,
   AlertTriangle,
   Users,
   HardHat,
-  Truck,
-  Wrench,
-  DollarSign,
-  ClipboardCheck,
   CloudSun,
-  MessageSquare,
   FileText,
-  ShieldCheck,
   Send,
   Plus,
   Trash2,
-  CheckCircle,
   FileDown,
-  Compass,
   ArrowRight,
-  UserCheck,
-  Info,
   Mic,
   Camera,
   Download,
   Search,
   Filter,
-  Eye,
   Check,
-  Clock
+  X
 } from 'lucide-react'
 
 // Import Zustand stores using @ alias
 import { useProjectStore } from '@/store/projectStore'
 import { useMaterialStore } from '@/store/materialStore'
 import { useWorkOrderStore, type WorkOrder } from '@/store/workOrderStore'
-import { useEquipmentStore, type EquipmentItem } from '@/store/equipmentStore'
-import { useQualityStore, type SnagItem } from '@/store/qualityStore'
+import { useEquipmentStore } from '@/store/equipmentStore'
+import { useQualityStore } from '@/store/qualityStore'
 import { useMeetingStore } from '@/store/meetingStore'
 import { useChatStore } from '@/store/chatStore'
 import { useAuthStore } from '@/store/authStore'
