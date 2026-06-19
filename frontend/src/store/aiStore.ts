@@ -351,7 +351,7 @@ export const useAIStore = create<AIState>((set, get) => ({
     }))
   },
 
-  triggerSimulationResponse: (prompt, threadId) => {
+  triggerSimulationResponse: async (prompt, threadId) => {
     const assistantMsgId = `msg_a_${Date.now()}`
     const initialAssistantMsg: Message = {
       id: assistantMsgId,
@@ -371,34 +371,58 @@ export const useAIStore = create<AIState>((set, get) => ({
       }
     })
 
-    // Simulate word streaming
+    const lowerPrompt = prompt.toLowerCase()
+    let tokens: string[] = []
+    let references: string[] = []
+
+    try {
+      // 1. Attempt connection to the real Python AI Platform backend
+      const response = await axios.post('http://localhost:8000/api/v1/copilot/chat', {
+        message: prompt,
+        conversation_id: threadId,
+        history: [],
+        context: {},
+        stream: false
+      }, { timeout: 3000 })
+
+      if (response.data && response.data.message) {
+        tokens = response.data.message.split(" ")
+        if (response.data.citations) {
+          references = response.data.citations.map((c: any) => c.source)
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to reach AI Platform microservice, falling back to client simulation.", e)
+    }
+
+    // 2. Default fallback tokens if backend is unreachable or response is empty
+    if (tokens.length === 0) {
+      tokens = [
+        "Analyzing", "the", "system", "database", "and", "recent", "logs.",
+        "Based", "on", "your", "request,", "I", "have", "scanned", "all", "active", "files.",
+        "Here", "is", "the", "current", "projection:", "weather", "forecasts", "indicate", "stable", "conditions,",
+        "but", "labor", "availability", "flags", "potential", "capacity", "risks."
+      ]
+
+      if (lowerPrompt.includes("create project") || lowerPrompt.includes("/create-project")) {
+        tokens = [
+          "PARSING COMMAND:", "`/create-project`", "\n\n",
+          "Detected Parameters:\n",
+          "- **Name:** Apex Residences\n",
+          "- **Budget:** $12,000,000\n\n",
+          "Executing autonomous database transaction...", "Success.", "Project entry has been drafted. I have attached an approval card below."
+        ]
+      } else if (lowerPrompt.includes("safety") || lowerPrompt.includes("accident") || lowerPrompt.includes("osha")) {
+        tokens = [
+          "Scanning OSHA compliance manuals...", "\n\n",
+          "According to standard Section 1926.501, Fall Protection systems must be fully certified for active crews above 6 feet.",
+          "Scaffolding inspection records on site note that scaffolding safety checklists must be completed before shift sign-on."
+        ]
+      }
+    }
+
     let currentWordIdx = 0
     let simulatedText = ""
-
-    // Context-sensitive simulated responses
-    let tokens = [
-      "Analyzing", "the", "system", "database", "and", "recent", "logs.",
-      "Based", "on", "your", "request,", "I", "have", "scanned", "all", "active", "files.",
-      "Here", "is", "the", "current", "projection:", "weather", "forecasts", "indicate", "stable", "conditions,",
-      "but", "labor", "availability", "flags", "potential", "capacity", "risks."
-    ]
-
-    const lowerPrompt = prompt.toLowerCase()
-    if (lowerPrompt.includes("create project") || lowerPrompt.includes("/create-project")) {
-      tokens = [
-        "PARSING COMMAND:", "`/create-project`", "\n\n",
-        "Detected Parameters:\n",
-        "- **Name:** Apex Residences\n",
-        "- **Budget:** $12,000,000\n\n",
-        "Executing autonomous database transaction...", "Success.", "Project entry has been drafted. I have attached an approval card below."
-      ]
-    } else if (lowerPrompt.includes("safety") || lowerPrompt.includes("accident") || lowerPrompt.includes("osha")) {
-      tokens = [
-        "Scanning OSHA compliance manuals...", "\n\n",
-        "According to standard Section 1926.501, Fall Protection systems must be fully certified for active crews above 6 feet.",
-        "Scaffolding inspection records on site note that scaffolding safety checklists must be completed before shift sign-on."
-      ]
-    }
 
     const interval = setInterval(() => {
       if (currentWordIdx >= tokens.length) {
@@ -417,7 +441,8 @@ export const useAIStore = create<AIState>((set, get) => ({
               ...m,
               content: simulatedText,
               isStreaming: false,
-              actions
+              actions,
+              references: references.length > 0 ? references : undefined
             }
           })
           return {
@@ -443,6 +468,6 @@ export const useAIStore = create<AIState>((set, get) => ({
           messages: { ...state.messages, [threadId]: nextMsgs }
         }
       })
-    }, 70)
+    }, 40)
   }
 }))
