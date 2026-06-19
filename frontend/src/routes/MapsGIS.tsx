@@ -1,20 +1,12 @@
 import React, { useState } from 'react'
 import {
-  Map,
   Compass,
   Layers,
   Search,
-  Filter,
   Navigation,
-  Wind,
-  Truck,
-  Activity,
-  Plus,
-  Trash2,
-  Sliders,
-  Maximize2
+  Wind
 } from 'lucide-react'
-import { useMapStore, type TrackedEntity } from '@/store/mapStore'
+import { useMapStore } from '@/store/mapStore'
 
 export default function MapsGIS() {
   const trackedEntities = useMapStore((state) => state.trackedEntities)
