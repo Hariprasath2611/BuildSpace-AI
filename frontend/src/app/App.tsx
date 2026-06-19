@@ -529,6 +529,9 @@ export default function App() {
           <Route path="/analytics/detail" element={<AnalyticsDetail />} />
           <Route path="/client" element={<ClientPortal />} />
           <Route path="/contractor" element={<ContractorPortal />} />
+          <Route path="/gis" element={<MapsGIS />} />
+          <Route path="/documents" element={<DocumentCenter />} />
+          <Route path="/media" element={<MediaCenter />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
