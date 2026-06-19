@@ -4,10 +4,7 @@ import {
   ChevronDown,
   Calendar as CalendarIcon,
   Search,
-  Check,
   Folder,
-  Eye,
-  FileCode,
   Sliders,
   ChevronLeft
 } from 'lucide-react'
