@@ -19,7 +19,8 @@ import {
   Lock,
   DollarSign,
   Users,
-  BarChart2
+  BarChart2,
+  Briefcase
 } from 'lucide-react'
 
 // Import Marketing / Auth Pages via @ path aliases
@@ -47,6 +48,7 @@ import Safety from '@/routes/Safety'
 import SafetyDetail from '@/routes/SafetyDetail'
 import Analytics from '@/routes/Analytics'
 import AnalyticsDetail from '@/routes/AnalyticsDetail'
+import ClientPortal from '@/routes/ClientPortal'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -127,6 +129,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'Safety Hub', path: '/safety', icon: ShieldCheck },
     { name: 'AI Operating System', path: '/ai', icon: Hammer },
     { name: 'Reports & Analytics', path: '/analytics', icon: BarChart2 },
+    { name: 'Client Portal', path: '/client', icon: Briefcase },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
@@ -516,6 +519,7 @@ export default function App() {
           <Route path="/safety/:incidentId" element={<SafetyDetail />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/detail" element={<AnalyticsDetail />} />
+          <Route path="/client" element={<ClientPortal />} />
         </Routes>
       </AppLayout>
     </BrowserRouter>
