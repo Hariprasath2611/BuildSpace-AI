@@ -48,6 +48,7 @@ export default function CommandPalette() {
     { name: "Go to AI Operating System", action: () => { navigate('/ai'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Reports & Analytics", action: () => { navigate('/analytics'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Client Portal", action: () => { navigate('/client'); setOpen(false); }, icon: FolderGit2, type: "nav" },
+    { name: "Go to Contractor Portal", action: () => { navigate('/contractor'); setOpen(false); }, icon: FolderGit2, type: "nav" },
     { name: "Go to Features", action: () => navigate('/features'), icon: FolderGit2, type: "nav" },
     { name: "Go to Pricing", action: () => navigate('/pricing'), icon: FolderGit2, type: "nav" },
     { name: "Go to Admin console", action: () => navigate('/admin'), icon: Lock, type: "nav" },
