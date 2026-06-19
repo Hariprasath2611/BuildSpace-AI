@@ -50,6 +50,9 @@ import Analytics from '@/routes/Analytics'
 import AnalyticsDetail from '@/routes/AnalyticsDetail'
 import ClientPortal from '@/routes/ClientPortal'
 import ContractorPortal from '@/routes/ContractorPortal'
+import MapsGIS from '@/routes/MapsGIS'
+import DocumentCenter from '@/routes/DocumentCenter'
+import MediaCenter from '@/routes/MediaCenter'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
