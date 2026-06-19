@@ -4,11 +4,23 @@ import IORedis from 'ioredis'
 const redisHost = process.env.REDIS_HOST || '127.0.0.1'
 const redisPort = parseInt(process.env.REDIS_PORT || '6379')
 
-// Create Redis Connection
+// Create Redis Connection with retry strategy limits to prevent crash loops in development
 const redisConnection = new IORedis({
   host: redisHost,
   port: redisPort,
-  maxRetriesPerRequest: null
+  maxRetriesPerRequest: null,
+  retryStrategy(times) {
+    if (times > 3) {
+      console.warn(`Redis connection failed after 3 attempts. BullMQ background task workers disabled.`)
+      return null // Stop reconnect loops
+    }
+    return Math.min(times * 100, 2000)
+  }
+})
+
+// Silence connection exceptions globally
+redisConnection.on('error', (err) => {
+  console.log(`Redis Connection Notification (suppressed): ${err.message}`)
 })
 
 // Define Background Queue
