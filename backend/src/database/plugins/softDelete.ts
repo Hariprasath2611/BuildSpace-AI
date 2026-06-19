@@ -1,14 +1,14 @@
 import { Schema, Document } from 'mongoose'
 
-export interface SoftDeleteDocument extends Document {
+export interface SoftDeleteDocument {
   isDeleted: boolean
   deletedAt?: Date | null
   deletedBy?: string | null
   isArchived: boolean
   archivedAt?: Date | null
-  softDelete(userId?: string): Promise<this>
-  restore(): Promise<this>
-  archive(): Promise<this>
+  softDelete(userId?: string): Promise<any>
+  restore(): Promise<any>
+  archive(): Promise<any>
 }
 
 export function softDeletePlugin(schema: Schema) {
