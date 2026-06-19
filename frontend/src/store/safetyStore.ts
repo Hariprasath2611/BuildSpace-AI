@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { api } from '../utils/api'
 
 export interface Hazard {
   id: string
@@ -35,8 +36,9 @@ export interface SafetyState {
   permits: Permit[]
   isSosTriggered: boolean
   
+  fetchHazards: () => Promise<void>
   triggerSos: (status: boolean) => void
-  logHazard: (hazard: Omit<Hazard, 'id' | 'status'>) => void
+  logHazard: (hazard: Omit<Hazard, 'id' | 'status'>) => Promise<void>
   resolveHazard: (id: string) => void
   logIncident: (incident: Omit<Incident, 'id' | 'status' | 'rootCause' | 'witnessStatements'>) => void
   renewPermit: (id: string, nextExpiry: string) => void
@@ -93,13 +95,55 @@ export const useSafetyStore = create<SafetyState>((set) => ({
 
   triggerSos: (status) => set({ isSosTriggered: status }),
 
-  logHazard: (hazard) => set((state) => ({
-    hazards: [...state.hazards, {
-      ...hazard,
-      id: `haz_${Date.now()}`,
-      status: 'Open'
-    }]
-  })),
+  fetchHazards: async () => {
+    try {
+      const response = await api.get('/safety')
+      const formatted = response.data.map((h: any) => ({
+        id: h._id || h.id,
+        title: h.title,
+        category: h.severity === 'High' ? 'Electrical' : 'Fall',
+        riskLevel: h.severity === 'High' ? 'Critical' : (h.severity === 'Medium' ? 'High' : 'Low'),
+        status: h.status,
+        location: "Site Gate B",
+        assignedTo: "Dave Miller"
+      }))
+      set({ hazards: formatted })
+    } catch (err) {
+      console.warn('Error fetching hazards from backend:', err)
+    }
+  },
+
+  logHazard: async (hazard) => {
+    try {
+      const response = await api.post('/safety', {
+        title: hazard.title,
+        description: `Location: ${hazard.location}, Risk: ${hazard.riskLevel}`,
+        severity: hazard.riskLevel === 'Critical' ? 'High' : (hazard.riskLevel === 'High' ? 'Medium' : 'Low')
+      })
+      const h = response.data
+      const newObs: Hazard = {
+        id: h._id || h.id,
+        title: h.title,
+        category: hazard.category,
+        riskLevel: hazard.riskLevel,
+        status: h.status,
+        location: hazard.location,
+        assignedTo: hazard.assignedTo || "Dave Miller"
+      }
+      set((state) => ({
+        hazards: [...state.hazards, newObs]
+      }))
+    } catch (err) {
+      console.warn('Error saving hazard observation to backend, adding locally:', err)
+      set((state) => ({
+        hazards: [...state.hazards, {
+          ...hazard,
+          id: `haz_${Date.now()}`,
+          status: 'Open'
+        }]
+      }))
+    }
+  },
 
   resolveHazard: (id) => set((state) => ({
     hazards: state.hazards.map((h) =>
