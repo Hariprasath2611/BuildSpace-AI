@@ -19,6 +19,7 @@ export const ProjectValidation = z.object({
 // 2. MONGOOSE INTERFACES
 // ==========================================
 export interface IProject extends Document, SoftDeleteDocument, AuditLogDocument {
+  _id: string
   name: string
   location: string
   budget: string
