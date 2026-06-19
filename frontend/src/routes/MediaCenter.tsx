@@ -1,20 +1,11 @@
 import React, { useState, useRef } from 'react'
 import {
-  Image,
   Sparkles,
-  Layers,
   ArrowLeftRight,
-  ZoomIn,
-  Camera,
-  Trash2,
-  Clock,
-  Compass,
   AlertTriangle,
-  FileImage,
-  ChevronLeft,
-  ChevronRight
+  FileImage
 } from 'lucide-react'
-import { useMediaStore, type MediaItem } from '@/store/mediaStore'
+import { useMediaStore } from '@/store/mediaStore'
 
 export default function MediaCenter() {
   const mediaItems = useMediaStore((state) => state.mediaItems)
