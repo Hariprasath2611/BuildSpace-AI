@@ -1,4 +1,4 @@
-import { Schema, Document } from 'mongoose'
+import { Schema } from 'mongoose'
 
 export interface SoftDeleteDocument {
   isDeleted: boolean
@@ -59,7 +59,7 @@ export function softDeletePlugin(schema: Schema) {
   })
 
   // 3. Document methods
-  schema.methods.softDelete = async function (this: SoftDeleteDocument, userId?: string): Promise<SoftDeleteDocument> {
+  schema.methods.softDelete = async function (this: any, userId?: string): Promise<any> {
     this.isDeleted = true
     this.deletedAt = new Date()
     if (userId) {
@@ -68,7 +68,7 @@ export function softDeletePlugin(schema: Schema) {
     return this.save()
   }
 
-  schema.methods.restore = async function (this: SoftDeleteDocument): Promise<SoftDeleteDocument> {
+  schema.methods.restore = async function (this: any): Promise<any> {
     this.isDeleted = false
     this.deletedAt = null
     this.deletedBy = null
@@ -77,7 +77,7 @@ export function softDeletePlugin(schema: Schema) {
     return this.save()
   }
 
-  schema.methods.archive = async function (this: SoftDeleteDocument): Promise<SoftDeleteDocument> {
+  schema.methods.archive = async function (this: any): Promise<any> {
     this.isArchived = true
     this.archivedAt = new Date()
     return this.save()
