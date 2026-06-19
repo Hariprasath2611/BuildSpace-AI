@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSafetyStore } from '../store/safetyStore'
 import {
@@ -20,6 +20,12 @@ import {
 
 export default function Safety() {
   const hazards = useSafetyStore((state) => state.hazards)
+  const fetchHazards = useSafetyStore((state) => state.fetchHazards)
+
+  useEffect(() => {
+    fetchHazards()
+  }, [fetchHazards])
+
   const incidents = useSafetyStore((state) => state.incidents)
   const permits = useSafetyStore((state) => state.permits)
   const isSosTriggered = useSafetyStore((state) => state.isSosTriggered)
