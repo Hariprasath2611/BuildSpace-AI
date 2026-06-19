@@ -39,6 +39,14 @@ export default function Auth({ mode }: AuthProps) {
         return
       }
 
+      // Store temporary authentication credentials in localStorage
+      localStorage.setItem('temp_auth_user', JSON.stringify({
+        email: formData.email,
+        name: formData.name || formData.email.split('@')[0],
+        role: formData.role === 'superintendent' ? 'General Contractor' : 'Admin',
+        tenantId: 'tenant-org-01'
+      }))
+
       // Successful auth - redirect to MFA verification
       navigate('/verify-mfa')
     }, 1200)
