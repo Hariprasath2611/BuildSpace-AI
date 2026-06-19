@@ -64,7 +64,7 @@ apiRouter.post('/projects', authenticateToken, authorizeRoles('General Contracto
 // ==========================================
 // 3. WORKFORCE REGISTER OPERATIONS
 // ==========================================
-apiRouter.get('/workforce', authenticateToken, async (req: Request, res: Response) => {
+apiRouter.get('/workforce', authenticateToken, async (_req: Request, res: Response) => {
   const list = await Workforce.find()
   res.json(list)
 })
@@ -83,7 +83,7 @@ apiRouter.post('/workforce', authenticateToken, authorizeRoles('General Contract
 // ==========================================
 // 4. WAREHOUSE MATERIALS INVENTORY
 // ==========================================
-apiRouter.get('/materials', authenticateToken, async (req: Request, res: Response) => {
+apiRouter.get('/materials', authenticateToken, async (_req: Request, res: Response) => {
   const list = await Material.find()
   res.json(list)
 })
@@ -107,7 +107,7 @@ apiRouter.post('/materials', authenticateToken, authorizeRoles('General Contract
 // ==========================================
 // 5. SAFETY EHS OBSERVATIONS AUDITS
 // ==========================================
-apiRouter.get('/safety', authenticateToken, async (req: Request, res: Response) => {
+apiRouter.get('/safety', authenticateToken, async (_req: Request, res: Response) => {
   const list = await SafetyObservation.find()
   res.json(list)
 })
