@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { Project, Material, Workforce, SafetyObservation, Expense, Invoice } from '../models'
 
 /**

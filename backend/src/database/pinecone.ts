@@ -6,12 +6,10 @@ export interface VectorDocument {
 
 class PineconeService {
   private apiKey: string | null = null
-  private environment: string | null = null
   private activeIndex: string | null = null
 
   constructor() {
     this.apiKey = process.env.PINECONE_API_KEY || null
-    this.environment = process.env.PINECONE_ENVIRONMENT || null
     this.activeIndex = process.env.PINECONE_INDEX || 'buildspace-ai'
   }
 
@@ -30,7 +28,7 @@ class PineconeService {
     }
   }
 
-  public async queryVector(vector: number[], topK = 5, filter?: Record<string, any>): Promise<any[]> {
+  public async queryVector(_vector: number[], topK = 5, _filter?: Record<string, any>): Promise<any[]> {
     if (!this.apiKey) {
       console.warn('Pinecone RAG vector query simulated (offline mode).')
       return [
