@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { api } from '../utils/api'
 
 export interface ProjectItem {
   id: string
@@ -32,7 +33,8 @@ export interface ProjectState {
   projects: ProjectItem[]
   wbsNodes: WbsNode[]
   rfis: RfiItem[]
-  addProject: (project: Omit<ProjectItem, 'id'>) => void
+  fetchProjects: () => Promise<void>
+  addProject: (project: Omit<ProjectItem, 'id'>) => Promise<void>
   addWbsNode: (node: Omit<WbsNode, 'id'>) => void
   updateWbsNode: (id: string, start: string, end: string, progress: number) => void
   addRfiComment: (rfiId: string, comment: string) => void
@@ -62,9 +64,47 @@ export const useProjectStore = create<ProjectState>((set) => ({
   projects: INITIAL_PROJECTS,
   wbsNodes: INITIAL_WBS_NODES,
   rfis: INITIAL_RFIS,
-  addProject: (proj) => set((state) => ({
-    projects: [...state.projects, { ...proj, id: `p_${Date.now()}` }]
-  })),
+  fetchProjects: async () => {
+    try {
+      const response = await api.get('/projects')
+      const formatted = response.data.map((p: any) => ({
+        id: p._id || p.id,
+        name: p.name,
+        location: p.location,
+        budget: p.budget,
+        progress: p.progress || 0,
+        hazards: p.hazards || 0
+      }))
+      set({ projects: formatted })
+    } catch (err) {
+      console.warn('Error fetching projects from backend:', err)
+    }
+  },
+  addProject: async (proj) => {
+    try {
+      const response = await api.post('/projects', {
+        name: proj.name,
+        location: proj.location,
+        budget: proj.budget
+      })
+      const newProj = {
+        id: response.data._id || response.data.id,
+        name: response.data.name,
+        location: response.data.location,
+        budget: response.data.budget,
+        progress: response.data.progress || 0,
+        hazards: response.data.hazards || 0
+      }
+      set((state) => ({
+        projects: [...state.projects, newProj]
+      }))
+    } catch (err) {
+      console.warn('Error saving project to backend, adding locally:', err)
+      set((state) => ({
+        projects: [...state.projects, { ...proj, id: `p_${Date.now()}` }]
+      }))
+    }
+  },
   addWbsNode: (node) => set((state) => ({
     wbsNodes: [...state.wbsNodes, { ...node, id: `w_${Date.now()}` }]
   })),
