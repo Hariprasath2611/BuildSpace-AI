@@ -86,6 +86,7 @@ export interface ICalendar extends Document, SoftDeleteDocument, AuditLogDocumen
 // 3. MONGOOSE SCHEMAS
 // ==========================================
 const ProjectSchema = new Schema<IProject>({
+  _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
   name: { type: String, required: true },
   location: { type: String, required: true },
   budget: { type: String, required: true },
