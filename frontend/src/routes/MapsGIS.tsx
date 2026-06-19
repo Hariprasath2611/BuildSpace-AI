@@ -250,7 +250,7 @@ export default function MapsGIS() {
               })}
 
               {/* Tracked crew points */}
-              {filteredEntities.map((ent, i) => {
+              {filteredEntities.map((ent) => {
                 // Map latitude/longitude to grid pixels
                 const x = 300 + (ent.lng - (-121.8863)) * 20000
                 const y = 200 - (ent.lat - 37.3382) * 20000
