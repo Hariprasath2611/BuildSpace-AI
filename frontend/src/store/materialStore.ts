@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { api } from '../utils/api'
 
 export interface Material {
   id: string
@@ -89,7 +90,8 @@ export interface MaterialState {
   consumptionLogs: ConsumptionLog[]
   qualityChecks: QualityCheck[]
   
-  addMaterial: (material: Omit<Material, 'id' | 'isFavorite'>) => void
+  fetchMaterials: () => Promise<void>
+  addMaterial: (material: Omit<Material, 'id' | 'isFavorite'>) => Promise<void>
   toggleFavorite: (id: string) => void
   approveOrder: (id: string) => void
   addConsumptionLog: (log: Omit<ConsumptionLog, 'id' | 'date'>) => void
@@ -224,13 +226,74 @@ export const useMaterialStore = create<MaterialState>((set) => ({
   consumptionLogs: INITIAL_CONSUMPTION,
   qualityChecks: INITIAL_QC,
 
-  addMaterial: (mat) => set((state) => ({
-    materials: [...state.materials, {
-      ...mat,
-      id: `m_${Date.now()}`,
-      isFavorite: false
-    }]
-  })),
+  fetchMaterials: async () => {
+    try {
+      const response = await api.get('/materials')
+      const formatted = response.data.map((m: any) => ({
+        id: m._id || m.id,
+        sku: m.sku,
+        name: m.name,
+        category: m.category,
+        currentStock: m.currentStock,
+        maxStock: m.maxStock,
+        minStock: Math.floor(m.maxStock * 0.15),
+        unit: m.unit,
+        status: m.status,
+        isFavorite: false,
+        budget: "$15k",
+        warehouseStock: m.currentStock,
+        siteStock: 0,
+        reserved: 0,
+        brand: "Generic"
+      }))
+      set({ materials: formatted })
+    } catch (err) {
+      console.warn('Error fetching materials from backend:', err)
+    }
+  },
+
+  addMaterial: async (mat) => {
+    try {
+      const response = await api.post('/materials', {
+        sku: mat.sku,
+        name: mat.name,
+        category: mat.category,
+        currentStock: mat.currentStock,
+        maxStock: mat.maxStock,
+        unit: mat.unit
+      })
+      const m = response.data
+      const newMat: Material = {
+        id: m._id || m.id,
+        sku: m.sku,
+        name: m.name,
+        category: m.category,
+        currentStock: m.currentStock,
+        maxStock: m.maxStock,
+        minStock: Math.floor(m.maxStock * 0.15),
+        unit: m.unit,
+        status: m.status,
+        isFavorite: false,
+        budget: "$15k",
+        warehouseStock: m.currentStock,
+        siteStock: 0,
+        reserved: 0,
+        brand: "Generic"
+      }
+      set((state) => ({
+        materials: [...state.materials, newMat]
+      }))
+    } catch (err) {
+      console.warn('Error saving material to backend, adding locally:', err)
+      set((state) => ({
+        materials: [...state.materials, {
+          ...mat,
+          id: `m_${Date.now()}`,
+          isFavorite: false
+        }]
+      }))
+    }
+  },
 
   toggleFavorite: (id) => set((state) => ({
     materials: state.materials.map((m) =>
