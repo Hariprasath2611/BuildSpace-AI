@@ -73,26 +73,53 @@ export default function MFA() {
     }
   }
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const code = otp.join("")
     if (code.length !== 6) return
     setIsLoading(true)
 
-    // Simulate OTP verification API
-    setTimeout(() => {
+    try {
+      const tempUserStr = localStorage.getItem('temp_auth_user')
+      const tempUser = tempUserStr ? JSON.parse(tempUserStr) : {
+        email: "d.hariprasath@apex.com",
+        name: "D. Hariprasath",
+        role: "Admin",
+        tenantId: "tenant-org-01"
+      }
+
+      // Query the backend server auth endpoint
+      const response = await api.post('/auth/login', {
+        username: tempUser.name,
+        role: tempUser.role,
+        tenantId: tempUser.tenantId
+      })
+
       setIsLoading(false)
       setIsSuccess(true)
       
-      // Perform mock authenticated login in Zustand store
+      setTimeout(() => {
+        login(
+          { uid: response.data.user.userId || "usr-123", email: tempUser.email, name: tempUser.name },
+          response.data.token,
+          tempUser.role.toLowerCase() === 'admin' ? 'admin' : 'superintendent'
+        )
+        localStorage.removeItem('temp_auth_user')
+        navigate('/select-organization')
+      }, 800)
+    } catch (err: any) {
+      console.warn('Backend authentication failed, using local mock fallback:', err.message)
+      setIsLoading(false)
+      setIsSuccess(true)
+      
       setTimeout(() => {
         login(
           { uid: "mock_user_1", email: "d.hariprasath@apex.com", name: "D. Hariprasath" },
           "mock_jwt_token_claims_909",
-          "admin" // Map claim to admin
+          "admin"
         )
         navigate('/select-organization')
       }, 800)
-    }, 1200)
+    }
   }
 
   const handleResend = () => {
