@@ -6,11 +6,7 @@ import {
   Activity,
   ChevronLeft,
   Calendar,
-  Layers,
   ShieldAlert,
-  CheckCircle,
-  FileText,
-  AlertTriangle,
   Play
 } from 'lucide-react'
 
@@ -38,8 +34,6 @@ export default function AnalyticsDetail() {
   const [searchParams] = useSearchParams()
   const projectId = searchParams.get("projectId") || "p_1"
 
-  // Zustand Store binding
-  const kpis = useAnalyticsStore((state) => state.kpis)
 
   const [activeSubTab, setActiveSubTab] = useState<'costs' | 'schedule' | 'defects'>('costs')
 
