@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useProjectStore } from '../store/projectStore'
 import {
@@ -13,6 +13,11 @@ import {
 export default function Projects() {
   const projects = useProjectStore((state) => state.projects)
   const addProject = useProjectStore((state) => state.addProject)
+  const fetchProjects = useProjectStore((state) => state.fetchProjects)
+
+  useEffect(() => {
+    fetchProjects()
+  }, [fetchProjects])
 
   const [search, setSearch] = useState("")
   const [isWizardOpen, setIsWizardOpen] = useState(false)
