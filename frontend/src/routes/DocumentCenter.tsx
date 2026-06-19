@@ -259,7 +259,9 @@ export default function DocumentCenter() {
 
                   <div className="flex items-center gap-2">
                     {doc.locked && (
-                      <Lock className="w-3.5 h-3.5 text-amber-500" title={`Locked by ${doc.lockedBy}`} />
+                      <span title={`Locked by ${doc.lockedBy}`}>
+                        <Lock className="w-3.5 h-3.5 text-amber-500" />
+                      </span>
                     )}
 
                     <span className={`px-2 py-0.5 rounded text-[8px] font-bold ${
