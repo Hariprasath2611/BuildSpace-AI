@@ -35,12 +35,9 @@ import { useAuthStore } from '@/store/authStore'
 
 export default function ContractorPortal() {
   const currentOrgId = useAuthStore((state) => state.currentOrgId)
-  const isOnline = true // Simulated online state
 
   // Zustand Store states
   const projects = useProjectStore((state) => state.projects)
-  const wbsNodes = useProjectStore((state) => state.wbsNodes)
-  const rfis = useProjectStore((state) => state.rfis)
   const materials = useMaterialStore((state) => state.materials)
   const workOrders = useWorkOrderStore((state) => state.workOrders)
   const addWorkOrder = useWorkOrderStore((state) => state.addWorkOrder)
@@ -50,18 +47,11 @@ export default function ContractorPortal() {
   const equipment = useEquipmentStore((state) => state.equipment)
   const reservations = useEquipmentStore((state) => state.reservations)
   const addReservation = useEquipmentStore((state) => state.addReservation)
-  const fuelLogs = useEquipmentStore((state) => state.fuelLogs)
   const addFuelLog = useEquipmentStore((state) => state.addFuelLog)
-  const maintenanceLogs = useEquipmentStore((state) => state.maintenanceLogs)
 
   const checklists = useQualityStore((state) => state.checklists)
   const snags = useQualityStore((state) => state.snags)
   const addSnag = useQualityStore((state) => state.addSnag)
-  const updateSnag = useQualityStore((state) => state.updateSnag)
-  
-  const meetings = useMeetingStore((state) => state.meetings)
-  const addMeeting = useMeetingStore((state) => state.addMeeting)
-  const toggleActionItem = useMeetingStore((state) => state.toggleActionItem)
 
   const channels = useChatStore((state) => state.channels)
   const messages = useChatStore((state) => state.messages)
