@@ -48,7 +48,6 @@ export default function DocumentCenter() {
   const [signatureName, setSignatureName] = useState('')
 
   // Document AI chat states
-  const [aiDocPrompt, setAiDocPrompt] = useState('')
   const [aiDocAnswer, setAiDocAnswer] = useState('')
   const [isAiDocLoading, setIsAiDocLoading] = useState(false)
 
