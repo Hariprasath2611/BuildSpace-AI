@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWorkforceStore } from '../store/workforceStore'
 import {
@@ -26,6 +26,12 @@ import {
 export default function Workforce() {
   // Zustand Store States & Actions
   const workers = useWorkforceStore((state) => state.workers)
+  const fetchWorkers = useWorkforceStore((state) => state.fetchWorkers)
+
+  useEffect(() => {
+    fetchWorkers()
+  }, [fetchWorkers])
+
   const attendance = useWorkforceStore((state) => state.attendance)
   const certifications = useWorkforceStore((state) => state.certifications)
   const subcontractors = useWorkforceStore((state) => state.subcontractors)
