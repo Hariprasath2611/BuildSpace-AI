@@ -29,7 +29,6 @@ import { useMaterialStore } from '@/store/materialStore'
 import { useWorkOrderStore, type WorkOrder } from '@/store/workOrderStore'
 import { useEquipmentStore } from '@/store/equipmentStore'
 import { useQualityStore } from '@/store/qualityStore'
-import { useMeetingStore } from '@/store/meetingStore'
 import { useChatStore } from '@/store/chatStore'
 import { useAuthStore } from '@/store/authStore'
 
