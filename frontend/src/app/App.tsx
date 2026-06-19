@@ -49,6 +49,7 @@ import SafetyDetail from '@/routes/SafetyDetail'
 import Analytics from '@/routes/Analytics'
 import AnalyticsDetail from '@/routes/AnalyticsDetail'
 import ClientPortal from '@/routes/ClientPortal'
+import ContractorPortal from '@/routes/ContractorPortal'
 
 // Import Global Framework Components & Stores
 import CommandPalette from '@/components/common/CommandPalette'
@@ -130,6 +131,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'AI Operating System', path: '/ai', icon: Hammer },
     { name: 'Reports & Analytics', path: '/analytics', icon: BarChart2 },
     { name: 'Client Portal', path: '/client', icon: Briefcase },
+    { name: 'Contractor Portal', path: '/contractor', icon: Hammer },
     { name: 'Features Directory', path: '/features', icon: FolderGit2 },
     { name: 'Solutions Portal', path: '/solutions', icon: Compass },
     { name: 'Security Hub', path: '/security', icon: ShieldCheck },
