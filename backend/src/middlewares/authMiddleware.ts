@@ -24,7 +24,8 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
   const token = authHeader && authHeader.split(' ')[1]
 
   if (!token) {
-    return res.status(401).json({ error: 'Access denied: Missing auth token' })
+    res.status(401).json({ error: 'Access denied: Missing auth token' })
+    return
   }
 
   try {
@@ -36,8 +37,10 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
     ;(mongoose.Schema.prototype as any)._tenantId = verified.tenantId
 
     next()
+    return
   } catch {
-    return res.status(403).json({ error: 'Access denied: Invalid auth token' })
+    res.status(403).json({ error: 'Access denied: Invalid auth token' })
+    return
   }
 }
 
@@ -45,13 +48,16 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
 export function authorizeRoles(...allowedRoles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
-      return res.status(401).json({ error: 'Access denied: User not authenticated' })
+      res.status(401).json({ error: 'Access denied: User not authenticated' })
+      return
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Access denied: Insufficient role permissions' })
+      res.status(403).json({ error: 'Access denied: Insufficient role permissions' })
+      return
     }
 
     next()
+    return
   }
 }
