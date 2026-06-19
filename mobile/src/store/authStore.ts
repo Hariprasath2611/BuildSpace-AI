@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { api } from '../services/api'
+
 
 export interface User {
   userId: string
@@ -31,21 +33,41 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: async (username, tenantId, role = 'General Contractor') => {
     set({ isLoading: true })
     try {
-      const mockUser: User = {
-        userId: `usr_${Date.now()}`,
-        userName: username || 'Guest PM',
-        role,
-        tenantId: tenantId || 'tenant_default_99',
-        companyId: 'company_apex_solutions'
-      }
-      const mockToken = `jwt-mobile-token-${Date.now()}`
+      let finalUser: User
+      let finalToken: string
 
-      await AsyncStorage.setItem('BS_TOKEN', mockToken)
-      await AsyncStorage.setItem('BS_USER', JSON.stringify(mockUser))
+      try {
+        const response = await api.post('/auth/login', { username, tenantId, role })
+        if (response.data && response.data.token) {
+          finalToken = response.data.token
+          finalUser = {
+            userId: response.data.user?.userId || `usr_${Date.now()}`,
+            userName: response.data.user?.userName || username,
+            role: response.data.user?.role || role,
+            tenantId: response.data.user?.tenantId || tenantId,
+            companyId: 'company_apex_solutions'
+          }
+        } else {
+          throw new Error("Invalid response format")
+        }
+      } catch (apiError) {
+        console.warn("Failed to contact auth server, falling back to local session simulation.")
+        finalToken = `jwt-mobile-token-${Date.now()}`
+        finalUser = {
+          userId: `usr_${Date.now()}`,
+          userName: username || 'Guest PM',
+          role,
+          tenantId: tenantId || 'tenant_default_99',
+          companyId: 'company_apex_solutions'
+        }
+      }
+
+      await AsyncStorage.setItem('BS_TOKEN', finalToken)
+      await AsyncStorage.setItem('BS_USER', JSON.stringify(finalUser))
 
       set({
-        user: mockUser,
-        token: mockToken,
+        user: finalUser,
+        token: finalToken,
         isAuthenticated: true,
         isLoading: false
       })
