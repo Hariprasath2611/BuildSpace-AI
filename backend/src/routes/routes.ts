@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { authenticateToken, authorizeRoles } from '../middlewares/authMiddleware'
-import { Organization, Project, Workforce, Material, SafetyObservation } from '../models/tenantModels'
+import { Organization, Project, Workforce, Material, SafetyObservation } from '../models'
 import { backgroundQueue } from '../queues/queue'
 
 export const apiRouter = Router()
