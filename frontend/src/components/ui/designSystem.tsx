@@ -383,7 +383,7 @@ export function ColorPicker({ color, onChange }: { color: string; onChange: (hex
 // ==========================================
 // 11. JSON & CODE HIGHLIGHTER VIEWER
 // ==========================================
-export function JSONViewer({ data }: { data: any }) {
+export function JSONViewer({ data }: { data: unknown }) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-[10px] font-mono text-left text-slate-300 overflow-auto max-h-80 select-text">
       <pre>{JSON.stringify(data, null, 2)}</pre>
