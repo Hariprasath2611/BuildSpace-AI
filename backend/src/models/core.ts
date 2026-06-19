@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose'
+import mongoose, { Schema, model, Document } from 'mongoose'
 import { z } from 'zod'
 import { tenantIsolationPlugin } from '../database/plugins/tenantIsolation'
 import { softDeletePlugin, SoftDeleteDocument } from '../database/plugins/softDelete'
@@ -72,6 +72,7 @@ export interface IDepartment extends Document, SoftDeleteDocument, AuditLogDocum
 // 3. MONGOOSE SCHEMAS
 // ==========================================
 const OrganizationSchema = new Schema<IOrganization>({
+  _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
   name: { type: String, required: true, unique: true, trim: true },
   status: { type: String, enum: ['active', 'suspended', 'trial'], default: 'active' },
   domain: { type: String, lowercase: true, trim: true }
@@ -82,6 +83,7 @@ OrganizationSchema.plugin(auditLogPlugin)
 OrganizationSchema.index({ name: 1 })
 
 const CompanySchema = new Schema<ICompany>({
+  _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
   organizationId: { type: String, required: true, index: true },
   name: { type: String, required: true, trim: true },
   taxId: { type: String, sparse: true },

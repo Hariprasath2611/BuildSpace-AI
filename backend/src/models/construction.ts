@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose'
+import mongoose, { Schema, model, Document } from 'mongoose'
 import { z } from 'zod'
 import { tenantIsolationPlugin } from '../database/plugins/tenantIsolation'
 import { softDeletePlugin, SoftDeleteDocument } from '../database/plugins/softDelete'
