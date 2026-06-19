@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { api } from '../utils/api'
 
 export interface Worker {
   id: string
@@ -71,7 +72,8 @@ export interface WorkforceState {
   safetyViolations: SafetyViolation[]
   gpsLocations: GpsLocation[]
   
-  onboardEmployee: (worker: Omit<Worker, 'id' | 'status' | 'safetyRating'>) => void
+  fetchWorkers: () => Promise<void>
+  onboardEmployee: (worker: Omit<Worker, 'id' | 'status' | 'safetyRating'>) => Promise<void>
   clockInWorker: (workerId: string, geofence: string) => void
   clockOutWorker: (workerId: string) => void
   renewCertification: (id: string, nextExpiry: string) => void
@@ -142,14 +144,59 @@ export const useWorkforceStore = create<WorkforceState>((set) => ({
   safetyViolations: INITIAL_VIOLATIONS,
   gpsLocations: INITIAL_GPS_LOCATIONS,
 
-  onboardEmployee: (worker) => set((state) => ({
-    workers: [...state.workers, {
-      ...worker,
-      id: `w_${Date.now()}`,
-      status: 'Inactive',
-      safetyRating: 100
-    }]
-  })),
+  fetchWorkers: async () => {
+    try {
+      const response = await api.get('/workforce')
+      const formatted = response.data.map((w: any) => ({
+        id: w._id || w.id,
+        name: w.name,
+        role: w.trade,
+        department: w.trade || "Operations",
+        skills: [w.trade || "General Labor"],
+        allocation: "Unallocated",
+        status: w.status === 'active' ? 'Active' : 'Inactive',
+        safetyRating: 100,
+        employmentType: "Direct"
+      }))
+      set({ workers: formatted })
+    } catch (err) {
+      console.warn('Error fetching workforce from backend:', err)
+    }
+  },
+
+  onboardEmployee: async (worker) => {
+    try {
+      const response = await api.post('/workforce', {
+        name: worker.name,
+        trade: worker.role
+      })
+      const w = response.data
+      const newWorker: Worker = {
+        id: w._id || w.id,
+        name: w.name,
+        role: w.trade,
+        department: w.trade || "Operations",
+        skills: [w.trade || "General Labor"],
+        allocation: "Unallocated",
+        status: w.status === 'active' ? 'Active' : 'Inactive',
+        safetyRating: 100,
+        employmentType: "Direct"
+      }
+      set((state) => ({
+        workers: [...state.workers, newWorker]
+      }))
+    } catch (err) {
+      console.warn('Error saving worker to backend, adding locally:', err)
+      set((state) => ({
+        workers: [...state.workers, {
+          ...worker,
+          id: `w_${Date.now()}`,
+          status: 'Inactive',
+          safetyRating: 100
+        }]
+      }))
+    }
+  },
 
   clockInWorker: (workerId, geofence) => set((state) => {
     const today = new Date().toISOString().split('T')[0]
