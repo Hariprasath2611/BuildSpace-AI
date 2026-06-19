@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useClientStore, ClientAnnotation } from '@/store/clientStore'
+import { useClientStore } from '@/store/clientStore'
 import {
   Sparkles,
   TrendingUp,
@@ -8,14 +8,11 @@ import {
   Layers,
   Activity,
   Plus,
-  Trash2,
   Check,
   X,
-  ChevronRight,
   Download,
   Mail,
   Camera,
-  MessageSquare,
   Mic,
   Paperclip,
   Play
