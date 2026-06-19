@@ -10,13 +10,14 @@ export const apiRouter = Router()
 // 1. AUTHENTICATION MODULE ENDPOINTS
 // ==========================================
 apiRouter.post('/auth/login', async (req: Request, res: Response) => {
-  const { username, password, tenantId } = req.body
+  const { username, tenantId } = req.body
 
   // Check tenant validity
   if (tenantId) {
     const org = await Organization.findById(tenantId)
     if (!org || org.status === 'suspended') {
-      return res.status(403).json({ error: 'Tenant organization suspended or invalid' })
+      res.status(403).json({ error: 'Tenant organization suspended or invalid' })
+      return
     }
   }
 
@@ -33,12 +34,13 @@ apiRouter.post('/auth/login', async (req: Request, res: Response) => {
   )
 
   res.json({ token, user: { name: username, tenantId } })
+  return
 })
 
 // ==========================================
 // 2. MULTI-TENANT PROJECTS DIRECTORY
 // ==========================================
-apiRouter.get('/projects', authenticateToken, async (req: Request, res: Response) => {
+apiRouter.get('/projects', authenticateToken, async (_req: Request, res: Response) => {
   const list = await Project.find()
   res.json(list)
 })
