@@ -30,14 +30,14 @@ export const UserValidation = z.object({
 // ==========================================
 // 2. MONGOOSE INTERFACES
 // ==========================================
-export interface IOrganization extends Document, SoftDeleteDocument, AuditLogDocument {
+export interface IOrganization extends SoftDeleteDocument, AuditLogDocument {
   _id: string
   name: string
   status: 'active' | 'suspended' | 'trial'
   domain?: string
 }
 
-export interface ICompany extends Document, SoftDeleteDocument, AuditLogDocument {
+export interface ICompany extends SoftDeleteDocument, AuditLogDocument {
   _id: string
   organizationId: string
   name: string
