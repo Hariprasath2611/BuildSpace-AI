@@ -126,18 +126,10 @@ export default function ContractorPortal() {
   // Calculations for dashboard
   const activeProject = projects[0] || { name: 'Downtown Plaza', budget: '$45.2M', progress: 78 }
   const totalOpenWorkOrders = workOrders.filter(w => w.status !== 'Completed').length
-  const totalCompletedWorkOrders = workOrders.filter(w => w.status === 'Completed').length
-  const blockedWorkOrders = workOrders.filter(w => w.status === 'Blocked')
   
   // Custom SVG Chart Data
   const budgetCodes = [
     { code: "02-Site Prep", budgeted: 150000, actual: 138000, color: "#f59e0b" },
-    { code: "03-Concrete", budgeted: 420000, actual: 395000, color: "#3b82f6" },
-    { code: "05-Steel Work", budgeted: 680000, actual: 520000, color: "#10b981" },
-    { code: "26-Electrical", budgeted: 280000, actual: 198000, color: "#8b5cf6" }
-  ]
-
-  const maxBudgeted = Math.max(...budgetCodes.map(b => b.budgeted))
 
   // Work Order Filters
   const filteredWorkOrders = useMemo(() => {
