@@ -1,6 +1,6 @@
 import { Schema, Document } from 'mongoose'
 
-export interface AuditLogDocument extends Document {
+export interface AuditLogDocument {
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
