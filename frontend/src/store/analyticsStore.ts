@@ -109,15 +109,9 @@ export const useAnalyticsStore = create<AnalyticsState>((set) => ({
     set((state) => ({
       kpis: state.kpis.map((k) => {
         if (k.id !== id) return k
-        // Recalculate status based on new threshold targets
-        let nextStatus: 'optimal' | 'warning' | 'critical' = 'optimal'
-        if (k.name.includes("Safety") || k.name.includes("Waste") || k.name.includes("Downtime") || k.name.includes("Variance")) {
-          // Lower is better
-          nextStatus = k.value <= newTarget ? 'optimal' : (k.value <= newTarget * 1.5 ? 'warning' : 'critical')
-        } else {
-          // Higher is better
-          nextStatus = k.value >= newTarget ? 'optimal' : (k.value >= newTarget * 0.85 ? 'warning' : 'critical')
-        }
+        const nextStatus = (k.name.includes("Safety") || k.name.includes("Waste") || k.name.includes("Downtime") || k.name.includes("Variance"))
+          ? (k.value <= newTarget ? 'optimal' : (k.value <= newTarget * 1.5 ? 'warning' : 'critical'))
+          : (k.value >= newTarget ? 'optimal' : (k.value >= newTarget * 0.85 ? 'warning' : 'critical'))
         return {
           ...k,
           target: newTarget,
