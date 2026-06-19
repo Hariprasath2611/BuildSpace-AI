@@ -26,7 +26,8 @@ export default function SelectOrg() {
   )
 
   const handleSelect = (orgId: string) => {
-    selectOrg(orgId)
+    const mappedOrgId = orgId === 'apex' ? 'tenant-org-01' : (orgId === 'matrix' ? 'tenant-org-02' : orgId)
+    selectOrg(mappedOrgId)
     // Redirect to home/dashboard
     navigate('/')
   }
