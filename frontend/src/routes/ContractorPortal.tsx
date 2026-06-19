@@ -495,7 +495,6 @@ export default function ContractorPortal() {
                   {/* Custom SVG bars */}
                   <div className="space-y-4">
                     {budgetCodes.map((code) => {
-                      const budgetedPercent = 100
                       const actualPercent = (code.actual / code.budgeted) * 100
                       return (
                         <div key={code.code} className="space-y-1">
