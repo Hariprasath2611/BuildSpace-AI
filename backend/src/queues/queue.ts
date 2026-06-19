@@ -49,6 +49,7 @@ export const backgroundWorker = new Worker(
       default:
         console.log(`Unknown job type: ${job.name}`)
     }
+    return {}
   },
   { connection: redisConnection }
 )
