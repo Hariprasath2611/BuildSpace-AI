@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useMaterialStore } from '../store/materialStore'
 import {
@@ -21,6 +21,11 @@ export default function Materials() {
   const materials = useMaterialStore((state) => state.materials)
   const addMaterial = useMaterialStore((state) => state.addMaterial)
   const toggleFavorite = useMaterialStore((state) => state.toggleFavorite)
+  const fetchMaterials = useMaterialStore((state) => state.fetchMaterials)
+
+  useEffect(() => {
+    fetchMaterials()
+  }, [fetchMaterials])
 
   const [search, setSearch] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
