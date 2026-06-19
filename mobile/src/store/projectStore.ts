@@ -57,8 +57,25 @@ export const useProjectStore = create<ProjectState>((set) => ({
   setActiveProjectId: (id) => set({ activeProjectId: id }),
 
   fetchProjects: async () => {
-    // In production, sync from server.
-    // For now we keep initial state.
+    try {
+      const response = await api.get('/projects')
+      if (response.data && Array.isArray(response.data)) {
+        const mapped: Project[] = response.data.map((p: any) => ({
+          id: p._id || p.id,
+          name: p.name,
+          location: p.location || "Onsite Sector",
+          budget: p.budget || 0,
+          progress: p.progress || 0,
+          milestones: p.milestones || [
+            { id: "m_1", name: "Foundation Pour", date: "2026-06-28", status: "pending" }
+          ],
+          media: p.media || []
+        }))
+        set({ projects: mapped })
+      }
+    } catch (e) {
+      console.warn("Failed to fetch projects from server. Using offline cached records.")
+    }
   },
 
   addProjectMedia: (projectId, type, url) => set((state) => ({
