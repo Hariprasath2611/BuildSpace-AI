@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head><title>BuildSpace AI Mock</title></head>
+<body>
+  <div id="app">
+    <!-- Auth -->
+    <input type="email" name="email" />
+    <input type="password" name="password" />
+    <button type="submit">Login</button>
+    <div id="message"></div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" style="display:none;">Welcome, Apex Builders Admin</div>
+
+    <!-- Projects -->
+    <input name="projectName" />
+    <input name="location" />
+    <button type="submit" id="create-project">Create Project</button>
+    <div id="project-view" style="display:none;">Downtown Skyscraper</div>
+
+    <!-- AI Copilot -->
+    <textarea name="prompt"></textarea>
+    <button id="send-ai">Send</button>
+    <div id="ai-response">The concrete curing time for C30 grade is typically 28 days for full strength.</div>
+
+    <!-- Billing -->
+    <button id="upgrade">Upgrade to Enterprise</button>
+    <div id="billing-status" style="display:none;">Successfully upgraded to ENTERPRISE</div>
+    <a href="/mock/invoice.pdf" id="invoice-link" style="display:none;">Download Invoice</a>
+  </div>
+  <script>
+    // Mock Interactions
+    document.querySelector('button[type="submit"]').addEventListener('click', () => {
+      document.getElementById('dashboard').style.display = 'block';
+    });
+    document.getElementById('create-project').addEventListener('click', () => {
+      document.getElementById('project-view').style.display = 'block';
+    });
+    document.getElementById('upgrade').addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('razorpay_success', { detail: { paymentId: 'pay_mock123' } }));
+      document.getElementById('billing-status').style.display = 'block';
+      document.getElementById('invoice-link').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

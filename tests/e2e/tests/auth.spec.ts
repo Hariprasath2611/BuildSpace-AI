@@ -8,7 +8,7 @@ test.describe('Authentication & RBAC', () => {
       await route.fulfill({ json });
     });
 
-    await page.goto('/login');
+    await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.fill('input[type="email"]', 'admin@apexbuilders.com');
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
@@ -22,7 +22,7 @@ test.describe('Authentication & RBAC', () => {
       await route.fulfill({ status: 401, json: { message: 'Invalid credentials' } });
     });
 
-    await page.goto('/login');
+    await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.fill('input[type="email"]', 'wrong@domain.com');
     await page.fill('input[type="password"]', 'badpass');
     await page.click('button[type="submit"]');

@@ -12,7 +12,7 @@ test.describe('Billing & Subscriptions', () => {
       await route.fulfill({ json: { success: true, plan: 'ENTERPRISE', invoiceUrl: '/mock/invoice.pdf' } });
     });
 
-    await page.goto('/billing');
+    await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.click('button:has-text("Upgrade to Enterprise")');
     
     // Simulate Razorpay popup success

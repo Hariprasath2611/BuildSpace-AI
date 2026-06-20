@@ -12,7 +12,7 @@ test.describe('AI Features & Vision', () => {
       await route.fulfill({ json: { response: 'The concrete curing time for C30 grade is typically 28 days for full strength.' } });
     });
 
-    await page.goto('/ai-copilot');
+    await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.fill('textarea[name="prompt"]', 'What is the curing time for C30 concrete?');
     await page.click('button:has-text("Send")');
 

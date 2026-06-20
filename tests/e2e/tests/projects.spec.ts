@@ -17,7 +17,7 @@ test.describe('Projects & Digital Twin', () => {
       }
     });
 
-    await page.goto('/projects/new');
+    await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.fill('input[name="projectName"]', 'Downtown Skyscraper');
     await page.fill('input[name="location"]', 'Bangalore, India');
     await page.click('button[type="submit"]');
