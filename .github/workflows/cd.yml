@@ -1,0 +1,35 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and Push Docker Images
+      run: |
+        docker build -t ${{ steps.login-ecr.outputs.registry }}/buildspace-backend:${{ github.sha }} -f infra/docker/backend.Dockerfile ./backend
+        docker push ${{ steps.login-ecr.outputs.registry }}/buildspace-backend:${{ github.sha }}
+        
+    - name: Update Kubeconfig
+      run: aws eks update-kubeconfig --name buildspace-prod-cluster --region us-east-1
+      
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl set image deployment/backend backend=${{ steps.login-ecr.outputs.registry }}/buildspace-backend:${{ github.sha }} -n buildspace-prod
+        kubectl rollout status deployment/backend -n buildspace-prod
