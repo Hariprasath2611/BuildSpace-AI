@@ -31,6 +31,11 @@
   <script>
     // Mock Interactions
     document.querySelector('button[type="submit"]').addEventListener('click', () => {
+      const email = document.querySelector('input[type="email"]').value;
+      if (email === 'wrong@domain.com') {
+        document.getElementById('message').innerText = 'Invalid credentials';
+        return;
+      }
       document.getElementById('dashboard').style.display = 'block';
     });
     document.getElementById('create-project').addEventListener('click', () => {
