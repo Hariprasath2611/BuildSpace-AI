@@ -69,4 +69,11 @@ async function startServer() {
   }
 }
 
-startServer()
+if (!process.env.VERCEL) {
+  startServer()
+} else {
+  // Connect to DB for serverless environment
+  connectDatabase().catch(console.error)
+}
+
+export default app
