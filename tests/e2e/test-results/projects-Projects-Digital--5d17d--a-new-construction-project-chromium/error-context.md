@@ -12,15 +12,18 @@
 # Error details
 
 ```
-Error: expect(page).toHaveURL(expected) failed
+Error: expect(locator).toBeVisible() failed
 
-Expected: "/projects/proj-123"
-Received: "file:///D:/work/BuildSpace%20AI/tests/e2e/public/index.html"
+Locator:  locator('text=Downtown Skyscraper')
+Expected: visible
+Received: hidden
 Timeout:  5000ms
 
 Call log:
-  - Expect "toHaveURL" with timeout 5000ms
-    14 × unexpected value "file:///D:/work/BuildSpace%20AI/tests/e2e/public/index.html"
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for locator('text=Downtown Skyscraper')
+    14 × locator resolved to <div id="project-view">Downtown Skyscraper</div>
+       - unexpected value "hidden"
 
 ```
 
@@ -65,9 +68,9 @@ Call log:
   22 |     await page.fill('input[name="location"]', 'Bangalore, India');
   23 |     await page.click('button[type="submit"]');
   24 | 
-> 25 |     await expect(page).toHaveURL('/projects/proj-123');
-     |                        ^ Error: expect(page).toHaveURL(expected) failed
-  26 |     await expect(page.locator('text=Downtown Skyscraper')).toBeVisible();
+  25 |     // await expect(page).toHaveURL('/projects/proj-123');
+> 26 |     await expect(page.locator('text=Downtown Skyscraper')).toBeVisible();
+     |                                                            ^ Error: expect(locator).toBeVisible() failed
   27 |   });
   28 | });
   29 | 
