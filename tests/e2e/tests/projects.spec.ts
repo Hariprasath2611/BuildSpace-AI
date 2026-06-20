@@ -20,7 +20,7 @@ test.describe('Projects & Digital Twin', () => {
     await page.goto('file://' + process.cwd() + '/public/index.html');
     await page.fill('input[name="projectName"]', 'Downtown Skyscraper');
     await page.fill('input[name="location"]', 'Bangalore, India');
-    await page.click('button[type="submit"]');
+    await page.click('#create-project');
 
     // await expect(page).toHaveURL('/projects/proj-123');
     await expect(page.locator('text=Downtown Skyscraper')).toBeVisible();
