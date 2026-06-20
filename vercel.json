@@ -11,5 +11,11 @@
             "builder": "@vercel/node",
             "entrypoint": "src/server.ts"
         }
-    }
+    },
+    "rewrites": [
+        {
+            "source": "/_/backend/(.*)",
+            "destination": "/_/backend/src/server"
+        }
+    ]
 }
