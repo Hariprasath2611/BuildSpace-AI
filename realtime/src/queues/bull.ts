@@ -2,9 +2,9 @@ import { Queue } from 'bullmq';
 import { redisClient } from '../config/redis';
 
 // Define queues for background tasks
-export const notificationQueue = new Queue('notifications', { connection: redisClient });
-export const reportGenerationQueue = new Queue('reports', { connection: redisClient });
-export const webhookQueue = new Queue('webhooks', { connection: redisClient });
+export const notificationQueue = new Queue('notifications', { connection: redisClient as any });
+export const reportGenerationQueue = new Queue('reports', { connection: redisClient as any });
+export const webhookQueue = new Queue('webhooks', { connection: redisClient as any });
 
 export const enqueueNotification = async (data: any) => {
   await notificationQueue.add('send_push', data, {

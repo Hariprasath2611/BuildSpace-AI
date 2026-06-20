@@ -10,7 +10,7 @@ const notificationWorker = new Worker(
     await new Promise((resolve) => setTimeout(resolve, 500));
     console.log(`Notification sent to ${job.data.userId}`);
   },
-  { connection: redisClient }
+  { connection: redisClient as any }
 );
 
 const reportWorker = new Worker(
@@ -21,7 +21,7 @@ const reportWorker = new Worker(
     await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log(`Report generated for tenant ${job.data.tenantId}`);
   },
-  { connection: redisClient }
+  { connection: redisClient as any }
 );
 
 const webhookWorker = new Worker(
@@ -32,7 +32,7 @@ const webhookWorker = new Worker(
     await new Promise((resolve) => setTimeout(resolve, 300));
     console.log(`Webhook dispatched to ${job.data.url}`);
   },
-  { connection: redisClient }
+  { connection: redisClient as any }
 );
 
 // Metrics and logging
