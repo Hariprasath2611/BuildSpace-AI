@@ -23,19 +23,34 @@ apiRouter.post('/auth/send-verification', async (req: Request, res: Response) =>
   otpStore.set(email, otp)
 
   try {
-    const testAccount = await nodemailer.createTestAccount()
-    const transporter = nodemailer.createTransport({
-      host: testAccount.smtp.host,
-      port: testAccount.smtp.port,
-      secure: testAccount.smtp.secure,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    })
+    let transporter;
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_PORT === '465', // true for 465, false for other ports
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      })
+    } else {
+      // Fallback to test account if no SMTP provided (does not send real emails)
+      const testAccount = await nodemailer.createTestAccount()
+      transporter = nodemailer.createTransport({
+        host: testAccount.smtp.host,
+        port: testAccount.smtp.port,
+        secure: testAccount.smtp.secure,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      })
+      console.log('WARNING: Using test email account. Emails will NOT be delivered to real inboxes.')
+    }
 
     const info = await transporter.sendMail({
-      from: '"BuildSpace AI" <noreply@buildspace.ai>',
+      from: process.env.SMTP_FROM || '"BuildSpace AI" <noreply@buildspace.ai>',
       to: email,
       subject: "Your Verification Code",
       text: `Your verification code is: ${otp}`,
@@ -43,9 +58,11 @@ apiRouter.post('/auth/send-verification', async (req: Request, res: Response) =>
     })
 
     console.log("Verification email sent: %s", info.messageId)
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
+    if (!process.env.SMTP_USER) {
+      console.log("Test Mail URL: %s", nodemailer.getTestMessageUrl(info))
+    }
 
-    res.json({ message: 'Verification code sent', previewUrl: nodemailer.getTestMessageUrl(info) })
+    res.json({ message: 'Verification email sent' })
   } catch (error) {
     console.error("Error sending email:", error)
     res.status(500).json({ error: 'Failed to send verification email' })
