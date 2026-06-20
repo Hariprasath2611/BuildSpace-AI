@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { api } from '../utils/api'
 import {
   Lock,
   Mail,
@@ -28,13 +29,14 @@ export default function Auth({ mode }: AuthProps) {
     setIsLoading(true)
 
     // Simulate network authentication verification
-    setTimeout(() => {
-      setIsLoading(false)
+    setTimeout(async () => {
       if (mode === 'login' && !formData.email.includes('@')) {
+        setIsLoading(false)
         setErrorMsg("Please enter a valid work email address.")
         return
       }
       if (mode === 'signup' && formData.password.length < 6) {
+        setIsLoading(false)
         setErrorMsg("Password must be at least 6 characters long.")
         return
       }
@@ -47,8 +49,15 @@ export default function Auth({ mode }: AuthProps) {
         tenantId: 'tenant-org-01'
       }))
 
-      // Successful auth - redirect to MFA verification
-      navigate('/verify-mfa')
+      try {
+        await api.post('/auth/send-verification', { email: formData.email })
+        setIsLoading(false)
+        // Successful auth - redirect to MFA verification
+        navigate('/verify-mfa')
+      } catch (err: any) {
+        setIsLoading(false)
+        setErrorMsg(err.response?.data?.error || "Failed to send verification code.")
+      }
     }, 1200)
   }
 
