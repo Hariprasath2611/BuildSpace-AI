@@ -16,6 +16,7 @@ export default function MFA() {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""))
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
   const [timeLeft, setTimeLeft] = useState(30)
   const inputRefs = useRef<HTMLInputElement[]>([])
 
@@ -77,6 +78,7 @@ export default function MFA() {
     const code = otp.join("")
     if (code.length !== 6) return
     setIsLoading(true)
+    setErrorMsg("")
 
     try {
       const tempUserStr = localStorage.getItem('temp_auth_user')
@@ -90,6 +92,8 @@ export default function MFA() {
       // Query the backend server auth endpoint
       const response = await api.post('/auth/login', {
         username: tempUser.name,
+        email: tempUser.email,
+        otp: code,
         role: tempUser.role,
         tenantId: tempUser.tenantId
       })
@@ -99,7 +103,7 @@ export default function MFA() {
       
       setTimeout(() => {
         login(
-          { uid: response.data.user.userId || "usr-123", email: tempUser.email, name: tempUser.name },
+          { uid: response.data.user?.userId || "usr-123", email: tempUser.email, name: tempUser.name },
           response.data.token,
           tempUser.role.toLowerCase() === 'admin' ? 'admin' : 'superintendent'
         )
@@ -107,26 +111,26 @@ export default function MFA() {
         navigate('/select-organization')
       }, 800)
     } catch (err: any) {
-      console.warn('Backend authentication failed, using local mock fallback:', err.message)
       setIsLoading(false)
-      setIsSuccess(true)
-      
-      setTimeout(() => {
-        login(
-          { uid: "mock_user_1", email: "d.hariprasath@apex.com", name: "D. Hariprasath" },
-          "mock_jwt_token_claims_909",
-          "admin"
-        )
-        navigate('/select-organization')
-      }, 800)
+      setErrorMsg(err.response?.data?.error || "Invalid verification code.")
     }
   }
 
-  const handleResend = () => {
+  const handleResend = async () => {
     setOtp(new Array(6).fill(""))
     setTimeLeft(30)
+    setErrorMsg("")
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus()
+    }
+    const tempUserStr = localStorage.getItem('temp_auth_user')
+    const tempUser = tempUserStr ? JSON.parse(tempUserStr) : null
+    if (tempUser?.email) {
+      try {
+        await api.post('/auth/send-verification', { email: tempUser.email })
+      } catch (err) {
+        console.error("Failed to resend code")
+      }
     }
   }
 
@@ -148,6 +152,12 @@ export default function MFA() {
             We sent a 6-digit confirmation code to your trusted device
           </p>
         </div>
+
+        {errorMsg && (
+          <div className="p-3 bg-brand-danger/10 border border-brand-danger/25 text-brand-danger text-xs rounded-lg font-medium text-center">
+            {errorMsg}
+          </div>
+        )}
 
         {isSuccess ? (
           <div className="p-6 bg-brand-success/10 border border-brand-success/20 rounded-xl text-center space-y-3 text-xs">
