@@ -44,6 +44,7 @@ app.get('/health', (_req: Request, res: Response) => {
 
 // 3. Mount Routes Controller
 app.use('/api/v1', apiRouter)
+app.use('/_/backend/api/v1', apiRouter) // Fallback for Vercel experimentalServices route prefix
 
 // 4. Global Error Boundary Middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
