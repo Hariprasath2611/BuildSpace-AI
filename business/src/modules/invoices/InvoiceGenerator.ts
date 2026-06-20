@@ -83,7 +83,7 @@ export class InvoiceGenerator {
       // Footer
       doc.font('Helvetica');
       doc.moveDown(4);
-      doc.text('This is a computer-generated invoice and does not require a physical signature.', { align: 'center', fontSize: 8 });
+      doc.fontSize(8).text('This is a computer-generated invoice and does not require a physical signature.', { align: 'center' });
 
       doc.end();
 
