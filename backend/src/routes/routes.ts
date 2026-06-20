@@ -1,16 +1,68 @@
 import { Router, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import nodemailer from 'nodemailer'
 import { authenticateToken, authorizeRoles } from '../middlewares/authMiddleware'
 import { Organization, Project, Workforce, Material, SafetyObservation } from '../models'
 import { backgroundQueue } from '../queues/queue'
 
 export const apiRouter = Router()
 
+const otpStore = new Map<string, string>()
+
 // ==========================================
 // 1. AUTHENTICATION MODULE ENDPOINTS
 // ==========================================
+apiRouter.post('/auth/send-verification', async (req: Request, res: Response) => {
+  const { email } = req.body
+  if (!email) {
+    res.status(400).json({ error: 'Email is required' })
+    return
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString()
+  otpStore.set(email, otp)
+
+  try {
+    const testAccount = await nodemailer.createTestAccount()
+    const transporter = nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    })
+
+    const info = await transporter.sendMail({
+      from: '"BuildSpace AI" <noreply@buildspace.ai>',
+      to: email,
+      subject: "Your Verification Code",
+      text: `Your verification code is: ${otp}`,
+      html: `<b>Your verification code is: ${otp}</b>`,
+    })
+
+    console.log("Verification email sent: %s", info.messageId)
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
+
+    res.json({ message: 'Verification code sent', previewUrl: nodemailer.getTestMessageUrl(info) })
+  } catch (error) {
+    console.error("Error sending email:", error)
+    res.status(500).json({ error: 'Failed to send verification email' })
+  }
+})
+
 apiRouter.post('/auth/login', async (req: Request, res: Response) => {
-  const { username, tenantId } = req.body
+  const { username, tenantId, email, otp } = req.body
+
+  if (email && otp) {
+    const storedOtp = otpStore.get(email)
+    if (!storedOtp || storedOtp !== otp) {
+      res.status(401).json({ error: 'Invalid or expired verification code' })
+      return
+    }
+    otpStore.delete(email)
+  }
 
   // Check tenant validity
   if (tenantId) {
