@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-service
+  namespace: buildspace-prod
+  labels:
+    app: ai-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-service
+  template:
+    metadata:
+      labels:
+        app: ai-service
+    spec:
+      nodeSelector:
+        accelerator: nvidia-tesla-t4
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Exists"
+        effect: "NoSchedule"
+      containers:
+      - name: ai-service
+        image: buildspace/ai-service:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: ai-secrets
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 8Gi
+          limits:
+            nvidia.com/gpu: 1
+            cpu: 4000m
+            memory: 16Gi
