@@ -1,11 +1,17 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
 
-const isProd = import.meta.env.PROD;
-const defaultBaseUrl = isProd ? '/_/backend/api/v1' : 'http://localhost:5000/api/v1';
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    // If we are deployed (not on localhost), force the relative backend path
+    return '/_/backend/api/v1'
+  }
+  // Otherwise use local dev URL
+  return import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'
+}
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || defaultBaseUrl,
+  baseURL: getBaseUrl(),
   timeout: 10000,
 })
 
