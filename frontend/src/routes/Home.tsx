@@ -99,7 +99,7 @@ export default function Home() {
 
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-safety/10 text-brand-safety text-xs font-semibold rounded-full border border-brand-safety/20">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Next-Gen Enterprise AI is Here</span>
+          <span>LuminaryForge Tech Enterprise AI is Here</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-heading font-extrabold tracking-tight max-w-4xl mx-auto leading-tight">
